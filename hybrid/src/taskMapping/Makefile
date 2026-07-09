@@ -1,6 +1,6 @@
 ##### LIBRARIES CONFIGURATION #####
 
-SYSTEMC := ../../systemc-2.3.1
+SYSTEMC := ../../systemc-3.0.2
 
 ##### DIRECTORIES #####
 

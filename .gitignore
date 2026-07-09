@@ -1,5 +1,5 @@
 # Vendored third-party C++ dependencies (fetched/built by hybrid/setup_dependencies.sh)
-hybrid/systemc-2.3.1/
+hybrid/systemc-3.0.2/
 hybrid/opt/
 
 # Compiled simulator build output (rebuilt via `cd hybrid/bin && make`)
