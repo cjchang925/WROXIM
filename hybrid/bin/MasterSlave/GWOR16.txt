@@ -1,0 +1,16 @@
+0 master: 2 slave: 2
+1 master: 0 slave: 0
+2 master: 8 slave: 8
+3 master: 10 slave: 10
+4 master: 3 slave: 3
+5 master: 1 slave: 1
+6 master: 9 slave: 9
+7 master: 11 slave: 11
+8 master: 4 slave: 4
+9 master: 6 slave: 6
+10 master: 13 slave: 13
+11 master: 12 slave: 12
+12 master: 5 slave: 5
+13 master: 7 slave: 7
+14 master: 15 slave: 15
+15 master: 14 slave: 14

@@ -1,0 +1,28 @@
+# Vendored third-party C++ dependencies (fetched/built by hybrid/setup_dependencies.sh)
+hybrid/systemc-2.3.1/
+hybrid/opt/
+
+# Compiled simulator build output (rebuilt via `cd hybrid/bin && make`)
+hybrid/bin/build/
+hybrid/bin/noxim
+
+# Simulation-run-generated output
+hybrid/bin/*.vcd
+hybrid/bin/*.vcd.fsdb
+hybrid/bin/tmp.log
+hybrid/bin/gantt_chart/*.png
+hybrid/tm_log/*.log
+hybrid/tm_log_hybrid/*.log
+!hybrid/tm_log/.gitkeep
+!hybrid/tm_log_hybrid/.gitkeep
+
+# Waveform-viewer (nWave/Verdi) auto-generated session/config files
+hybrid/bin/nWaveLog/
+hybrid/bin/vfastLog/
+hybrid/bin/novas.rc
+hybrid/bin/novas.conf
+
+# Generic compiled object/library files
+*.o
+*.a
+*.so

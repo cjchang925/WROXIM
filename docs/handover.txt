@@ -1,0 +1,14 @@
+1.交接
+https://hackmd.io/@p76131254/SkmMUbULbl
+2.System Parameter Configuration:
+https://hackmd.io/@p76131254/SyAhgPbigl
+3.Latency
+https://hackmd.io/@p76131254/BkiBn2Lsxg
+4.energy
+https://hackmd.io/@p76131254/ryqd2NNigx
+5.Energy Parameter Table
+https://hackmd.io/@p76131254/S1mLS5Wole
+6.Power consumption
+https://hackmd.io/@p76131254/BkHPtV35lg
+7.NoC WRONoC Hybrid 數據比較
+https://hackmd.io/@p76131254/SkxEAFlgbx

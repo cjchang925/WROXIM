@@ -1,0 +1,21 @@
+Power:
+    Laser:  #
+        # [idle, active] (mW)
+        - [0.0, 30.0]
+    Serializer:
+        # [idle, active] (mW)
+        - [1.0, 3.0]
+    Driver:
+        # [idle, active] (mW)
+        - [0.0, 3.0]
+    RxComparator:
+        # [idle, active] (mW)
+        - [0.33, 1.0]
+    TIA:
+        # [idle, active] (mW)
+        - [0.0, 2.0]
+    MRR:
+        # [idle, active] (mW)
+        - [0.0, 0.6]
+
+        
