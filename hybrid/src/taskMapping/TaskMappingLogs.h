@@ -59,7 +59,7 @@
 
 #define TM_SIMWRITELOG(MSG) \
         { \
-          if (tmInstance->taskmappinglog_file.is_open()) { \
+          if (tmInstance && tmInstance->taskmappinglog_file.is_open()) { \
             tmInstance->taskmappinglog_file << MSG; \
           } \
           else { \
@@ -106,7 +106,7 @@
  #ifdef   TM_SIMEXECLOG_EXTENDED
   #define TM_SIMEXECLOG(CODE,PE,APP,TSK,MSG) \
           { \
-            if (tmInstance->taskmappinglog_file.is_open()) { \
+            if (tmInstance && tmInstance->taskmappinglog_file.is_open()) { \
               double ccycle = sc_time_stamp().to_double() / GlobalParams::clock_period_ps; \
               tmInstance->taskmappinglog_file << "(" << setfill('0') << setw(2) << CODE << ") " \
                                               << "@" << setfill('0') << setw(6) << ccycle << " " \
@@ -119,7 +119,7 @@
  #else
   #define TM_SIMEXECLOG(CODE,PE,APP,TSK,MSG) \
           { \
-            if (tmInstance->taskmappinglog_file.is_open()) { \
+            if (tmInstance && tmInstance->taskmappinglog_file.is_open()) { \
               double ccycle = sc_time_stamp().to_double() / GlobalParams::clock_period_ps; \
               tmInstance->taskmappinglog_file << "(" << setfill('0') << setw(2) << CODE << ") " \
                                               << "@" << setfill('0') << setw(6) << ccycle << " " \
@@ -148,7 +148,7 @@
  #define TM_SIMPEMETRICSLOG(CODE,PE,MSG1,MSG2) \
          { \
            double ccycle = sc_time_stamp().to_double() / GlobalParams::clock_period_ps; \
-           if (tmInstance->taskmappinglog_file.is_open()) { \
+           if (tmInstance && tmInstance->taskmappinglog_file.is_open()) { \
              tmInstance->taskmappinglog_file << "(" << setfill('0') << setw(2) << CODE << ") " \
                                              << "@" << setfill('0') << setw(6) << ccycle << " "\
                                              << "pe" << setfill('0') << setw(3) << PE << "," << MSG1 << " -> " \
@@ -165,7 +165,7 @@
  #define TM_SIMAPPMETRICSLOG(CODE,APP,MSG1,MSG2) \
          { \
            double ccycle = sc_time_stamp().to_double() / GlobalParams::clock_period_ps; \
-           if (tmInstance->taskmappinglog_file.is_open()) { \
+           if (tmInstance && tmInstance->taskmappinglog_file.is_open()) { \
              tmInstance->taskmappinglog_file << "(" << setfill('0') << setw(2) << CODE << ") " \
                                              << "@" << setfill('0') << setw(6) << ccycle << " "\
                                              << "app" << setfill('0') << setw(2) << APP << "," << MSG1 << " -> " \
@@ -182,7 +182,7 @@
  #define TM_SIMEND2ENDLATENCYLOG(CODE,APP,TSK1,TSK2,MSG) \
          { \
            double ccycle = sc_time_stamp().to_double() / GlobalParams::clock_period_ps; \
-           if (tmInstance->taskmappinglog_file.is_open()) { \
+           if (tmInstance && tmInstance->taskmappinglog_file.is_open()) { \
              tmInstance->taskmappinglog_file << "(" << setfill('0') << setw(2) << CODE << ") " \
                                              << "@" << setfill('0') << setw(6) << ccycle << " " \
                                              << "app" << setfill('0') << setw(2) << APP << "," \
@@ -203,7 +203,7 @@
  #define TM_SIMEND2ENDHOPSLOG(CODE,APP,TSK1,TSK2,MSG) \
          { \
            double ccycle = sc_time_stamp().to_double() / GlobalParams::clock_period_ps; \
-           if (tmInstance->taskmappinglog_file.is_open()) { \
+           if (tmInstance && tmInstance->taskmappinglog_file.is_open()) { \
              tmInstance->taskmappinglog_file << "(" << setfill('0') << setw(2) << CODE << ") " \
                                              << "@" << setfill('0') << setw(6) << ccycle << " " \
                                              << "app" << setfill('0') << setw(2) << APP << "," \
@@ -235,7 +235,7 @@
   #define TM_SIMOPTICALEND2ENDLATENCYLOG(CODE,APP,TSK1,TSK2,MSG) \
           { \
             double ccycle = sc_time_stamp().to_double() / GlobalParams::clock_period_ps; \
-            if (tmInstance->taskmappinglog_file.is_open()) { \
+            if (tmInstance && tmInstance->taskmappinglog_file.is_open()) { \
               tmInstance->taskmappinglog_file << "(" << setfill('0') << setw(2) << CODE << ") " \
                                               << "@" << setfill('0') << setw(6) << ccycle << " " \
                                               << "app" << setfill('0') << setw(2) << APP << "," \
@@ -256,7 +256,7 @@
   #define TM_SIMPEEND2ENDLATENCYLOG(CODE,APP,TSK1,TSK2,MSG) \
           { \
             double ccycle = sc_time_stamp().to_double() / GlobalParams::clock_period_ps; \
-            if (tmInstance->taskmappinglog_file.is_open()) { \
+            if (tmInstance && tmInstance->taskmappinglog_file.is_open()) { \
               tmInstance->taskmappinglog_file << "(" << setfill('0') << setw(2) << CODE << ") " \
                                               << "@" << setfill('0') << setw(6) << ccycle << " " \
                                               << "app" << setfill('0') << setw(2) << APP << "," \
@@ -277,7 +277,7 @@
   #define TM_SIMBUFFERSTATUSLOG(CODE,APP,TSK1,TSK2,MSG) \
           { \
             double ccycle = sc_time_stamp().to_double() / GlobalParams::clock_period_ps; \
-            if (tmInstance->taskmappinglog_file.is_open()) { \
+            if (tmInstance && tmInstance->taskmappinglog_file.is_open()) { \
               tmInstance->taskmappinglog_file << "(" << setfill('0') << setw(2) << CODE << ") " \
                                               << "@" << setfill('0') << setw(6) << ccycle << " " \
                                               << "app" << setfill('0') << setw(2) << APP << "," \
@@ -303,7 +303,7 @@
   #define TM_SIMFLOWCONTROLOFFLOG(CODE,PE1,PE2,MSG) \
           { \
             double ccycle = sc_time_stamp().to_double() / GlobalParams::clock_period_ps; \
-            if (tmInstance->taskmappinglog_file.is_open()) { \
+            if (tmInstance && tmInstance->taskmappinglog_file.is_open()) { \
               tmInstance->taskmappinglog_file << "(" << setfill('0') << setw(2) << CODE << ") " \
                                               << "@" << setfill('0') << setw(6) << ccycle << " " \
                                               << "pe" << setfill('0') << setw(2) << PE1 << "->" \
@@ -322,7 +322,7 @@
   #define TM_SIMFLOWCONTROLONLOG(CODE,PE1,PE2,MSG) \
           { \
             double ccycle = sc_time_stamp().to_double() / GlobalParams::clock_period_ps; \
-            if (tmInstance->taskmappinglog_file.is_open()) { \
+            if (tmInstance && tmInstance->taskmappinglog_file.is_open()) { \
               tmInstance->taskmappinglog_file << "(" << setfill('0') << setw(2) << CODE << ") " \
                                               << "@" << setfill('0') << setw(6) << ccycle << " " \
                                               << "pe" << setfill('0') << setw(2) << PE1 << "->" \

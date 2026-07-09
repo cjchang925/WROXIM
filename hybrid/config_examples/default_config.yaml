@@ -3,6 +3,11 @@
 #
 # NOC & WIRED CONFIGURATION
 #
+
+architecture: MESH
+network_protocol: ABP
+use_TxRx_PreciseTiming: false
+
 #
 # X and Y mesh sizes
 mesh_dim_x: 4
@@ -113,6 +118,7 @@ Channels:
 #
 # SIMULATION PARAMETERS
 #
+clock_period_optical_ps: 25
 clock_period_ps: 1000
 # duration of reset signal assertion, expressed in cycles
 reset_time: 1000
@@ -162,3 +168,4 @@ traffic_distribution: TRAFFIC_RANDOM
 # when traffic table based is specified, use the following
 # configuration file
 traffic_table_filename: "t.txt"
+tgff: false
