@@ -53,7 +53,7 @@ path = sys.path[0]
 print(path)
 
 #map_filename = "experiment_tg5"
-map_filename = "01-oneapp-fourtasks1"
+map_filename = "experiment_tg3"
 
 with open(os.path.join(path, "..", "..", "tm_examples", f"{map_filename}.map"), "r") as file:
     lines = file.readlines()
@@ -73,7 +73,7 @@ for line in lines:
     if line.startswith('task:'):
         nums = list(map(int, re.findall(r'-?\d+', line)))
         task = nums[0]
-        for i in range(1, len(nums), 3):
+        for i in range(1, len(nums), 4):
             if i + 2 < len(nums):
                 exe = nums[i]
                 sub_task = nums[i+1]
