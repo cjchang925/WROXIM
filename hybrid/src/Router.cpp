@@ -9,8 +9,9 @@
  */
 
 #include "Router.h"
-#include "./taskMapping/TaskMappingLogs.h"
+
 #include "./taskMapping/TaskMapping.h"
+#include "./taskMapping/TaskMappingLogs.h"
 void Router::rxProcess()
 {
     if (reset.read()) {
