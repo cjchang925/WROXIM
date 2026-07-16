@@ -11,130 +11,128 @@
 #ifndef __NOXIMPROCESSINGELEMENT_H__
 #define __NOXIMPROCESSINGELEMENT_H__
 
-#include <queue>
 #include <systemc.h>
+
+#include <queue>
 
 #include "DataStructs.h"
 #include "GlobalTrafficTable.h"
 #include "Utils.h"
-
 #include "taskMapping/PEMappedTaskExecution.h"
 
 using namespace std;
 
-SC_MODULE(ProcessingElement)
-{
-	// *************
-	// Added by LGGM
-	// *************
-private:
-	bool tm_pe_ptralreadyassigned;
-	tm_pe *tm_pe_ptr;
-	PEMappedTaskExecution *peMapTaskExec;
+SC_MODULE(ProcessingElement) {
+  // *************
+  // Added by LGGM
+  // *************
+ private:
+  bool tm_pe_ptralreadyassigned;
+  tm_pe *tm_pe_ptr;
+  PEMappedTaskExecution *peMapTaskExec;
 
-public:
-	// *************
+ public:
+  // *************
 
-	// I/O Ports
-	sc_in_clk clock;   // The input clock for the PE
-	sc_in<bool> reset; // The reset signal for the PE
+  // I/O Ports
+  sc_in_clk clock;   // The input clock for the PE
+  sc_in<bool> reset; // The reset signal for the PE
 
-	sc_in<Flit> flit_rx; // The input channel
-	sc_in<bool> req_rx;	 // The request associated with the input channel
-	sc_out<bool> ack_rx; // The outgoing ack signal associated with the input channel
+  sc_in<Flit> flit_rx; // The input channel
+  sc_in<bool> req_rx;  // The request associated with the input channel
+  sc_out<bool>
+      ack_rx; // The outgoing ack signal associated with the input channel
 
-	sc_out<Flit> flit_tx; // The output channel
-	sc_out<bool> req_tx;  // The request associated with the output channel
-	sc_in<bool> ack_tx;	  // The outgoing ack signal associated with the output channel
+  sc_out<Flit> flit_tx; // The output channel
+  sc_out<bool> req_tx;  // The request associated with the output channel
+  sc_in<bool>
+      ack_tx; // The outgoing ack signal associated with the output channel
 
-	sc_in<int> free_slots_neighbor;
+  sc_in<int> free_slots_neighbor;
 
-	// Registers
-	int local_id;					 // Unique identification number
-	bool current_level_rx;			 // Current level for Alternating Bit Protocol (ABP)
-	bool current_level_tx;			 // Current level for Alternating Bit Protocol (ABP)
-	queue<Packet> packet_queue;		 // Local queue of packets
-	bool transmittedAtPreviousCycle; // Used for distributions with memory
+  // Registers
+  int local_id;          // Unique identification number
+  bool current_level_rx; // Current level for Alternating Bit Protocol (ABP)
+  bool current_level_tx; // Current level for Alternating Bit Protocol (ABP)
+  queue<Packet> packet_queue;      // Local queue of packets
+  bool transmittedAtPreviousCycle; // Used for distributions with memory
 
-	// Functions
-	void rxProcess(); // The receiving process
-	void txProcess(); // The transmitting process
+  // Functions
+  void rxProcess(); // The receiving process
+  void txProcess(); // The transmitting process
 
-	// ***********************
-	// Functions added by LGGM
-	// ***********************
-	void peProcess();				 // Processing Element Process
-	void peRxProcess();				 // Rx Process for Processing Element
-	void peTxProcess();				 // Tx Process for Processing Element
-	bool peGetMapping(bool = false); // Mapping from the TaskMapping Object
-	inline bool peMappedTasks();	 // Are there tasks mapped to this PE?
+  // ***********************
+  // Functions added by LGGM
+  // ***********************
+  void peProcess();                // Processing Element Process
+  void peRxProcess();              // Rx Process for Processing Element
+  void peTxProcess();              // Tx Process for Processing Element
+  bool peGetMapping(bool = false); // Mapping from the TaskMapping Object
+  inline bool peMappedTasks();     // Are there tasks mapped to this PE?
 
-	// ***********************
+  // ***********************
 
-	bool canShot(Packet & packet); // True when the packet must be shot
-	Flit nextFlit();			   // Take the next flit of the current packet
-	Packet trafficTest();		   // used for testing traffic
-	Packet trafficRandom();		   // Random destination distribution
-	Packet trafficTranspose1();	   // Transpose 1 destination distribution
-	Packet trafficTranspose2();	   // Transpose 2 destination distribution
-	Packet trafficBitReversal();   // Bit-reversal destination distribution
-	Packet trafficShuffle();	   // Shuffle destination distribution
-	Packet trafficButterfly();	   // Butterfly destination distribution
-	Packet trafficLocal();		   // Random with locality
-	Packet trafficULocal();		   // Random with locality
+  bool canShot(Packet & packet); // True when the packet must be shot
+  Flit nextFlit();               // Take the next flit of the current packet
+  Packet trafficTest();          // used for testing traffic
+  Packet trafficRandom();        // Random destination distribution
+  Packet trafficTranspose1();    // Transpose 1 destination distribution
+  Packet trafficTranspose2();    // Transpose 2 destination distribution
+  Packet trafficBitReversal();   // Bit-reversal destination distribution
+  Packet trafficShuffle();       // Shuffle destination distribution
+  Packet trafficButterfly();     // Butterfly destination distribution
+  Packet trafficLocal();         // Random with locality
+  Packet trafficULocal();        // Random with locality
 
-	GlobalTrafficTable *traffic_table; // Reference to the Global traffic Table
-	bool never_transmit;			   // true if the PE does not transmit any packet
-	//  (valid only for the table based traffic)
+  GlobalTrafficTable *traffic_table; // Reference to the Global traffic Table
+  bool never_transmit; // true if the PE does not transmit any packet
+  //  (valid only for the table based traffic)
 
-	void fixRanges(const Coord, Coord &); // Fix the ranges of the destination
-	int randInt(int min, int max);		  // Extracts a random integer number between min and max
-	int getRandomSize();				  // Returns a random size in flits for the packet
-	void setBit(int &x, int w, int v);
-	int getBit(int x, int w);
-	double log2ceil(double x);
+  void fixRanges(const Coord, Coord &); // Fix the ranges of the destination
+  int randInt(int min,
+              int max); // Extracts a random integer number between min and max
+  int getRandomSize();  // Returns a random size in flits for the packet
+  void setBit(int &x, int w, int v);
+  int getBit(int x, int w);
+  double log2ceil(double x);
 
-	int roulett();
-	int findRandomDestination(int local_id, int hops);
+  int roulett();
+  int findRandomDestination(int local_id, int hops);
 
-	// Constructor
-	SC_CTOR(ProcessingElement)
-	{
-		// **************************
-		// Added and modified by LGGM
-		// **************************
+  // Constructor
+  SC_CTOR(ProcessingElement) {
+    // **************************
+    // Added and modified by LGGM
+    // **************************
 
-		// The next block must be executed after calling the configure() function
-		// in ConfigurationManager.cpp
-		if (GlobalParams::traffic_distribution == TRAFFIC_TASKMAPPING)
-		{
-			tm_pe_ptralreadyassigned = false;
-			peMapTaskExec = new PEMappedTaskExecution("PEMappedTaskExecution");
+    // The next block must be executed after calling the configure() function
+    // in ConfigurationManager.cpp
+    if (GlobalParams::traffic_distribution == TRAFFIC_TASKMAPPING) {
+      tm_pe_ptralreadyassigned = false;
+      peMapTaskExec = new PEMappedTaskExecution("PEMappedTaskExecution");
 
-			SC_METHOD(peProcess);
-			sensitive << reset;
-			sensitive << clock.pos();
+      SC_METHOD(peProcess);
+      sensitive << reset;
+      sensitive << clock.pos();
 
-			SC_METHOD(peRxProcess);
-			sensitive << reset;
-			sensitive << clock.pos();
+      SC_METHOD(peRxProcess);
+      sensitive << reset;
+      sensitive << clock.pos();
 
-			SC_METHOD(peTxProcess);
-			sensitive << reset;
-			sensitive << clock.pos();
-		}
-		else
-		{
-			SC_METHOD(rxProcess);
-			sensitive << reset;
-			sensitive << clock.pos();
+      SC_METHOD(peTxProcess);
+      sensitive << reset;
+      sensitive << clock.pos();
+    } else {
+      SC_METHOD(rxProcess);
+      sensitive << reset;
+      sensitive << clock.pos();
 
-			SC_METHOD(txProcess);
-			sensitive << reset;
-			sensitive << clock.pos();
-		}
-		// **************************
-	}
+      SC_METHOD(txProcess);
+      sensitive << reset;
+      sensitive << clock.pos();
+    }
+    // **************************
+  }
 };
 
 #endif

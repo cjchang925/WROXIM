@@ -1,0 +1,7 @@
+CompileFlags:
+  Add:
+    - "-std=c++17"
+    - "-DSC_NO_WRITE_CHECK"
+    - "-I/home2/chichun/repo/WROXIM/hybrid/src"
+    - "-isystem/home2/chichun/repo/WROXIM/hybrid/systemc-3.0.2/include"
+    - "-I/home2/chichun/repo/WROXIM/hybrid/opt/local/yaml-cpp/include"

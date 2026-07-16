@@ -13,71 +13,69 @@
 
 #include <cassert>
 #include <queue>
+
 #include "DataStructs.h"
 using namespace std;
 
 class Buffer {
 
-  public:
+ public:
+  Buffer();
 
-    Buffer();
+  virtual ~Buffer() {}
+  void SetMaxBufferSize(
+      const unsigned int bms); // Set buffer max size (in flits)
 
-    virtual ~ Buffer() {
-    } void SetMaxBufferSize(const unsigned int bms);	// Set buffer max size (in flits)
+  unsigned int GetMaxBufferSize() const; // Get max buffer size
 
-    unsigned int GetMaxBufferSize() const;	// Get max buffer size
+  unsigned int getCurrentFreeSlots() const; // free buffer slots
 
-    unsigned int getCurrentFreeSlots() const;	// free buffer slots
+  bool IsFull() const; // Returns true if buffer is full
 
-    bool IsFull() const;	// Returns true if buffer is full
+  bool IsEmpty() const; // Returns true if buffer is empty
 
-    bool IsEmpty() const;	// Returns true if buffer is empty
+  virtual void Drop(
+      const Flit &flit) const; // Called by Push() when buffer is full
 
-    virtual void Drop(const Flit & flit) const;	// Called by Push() when buffer is full
+  virtual void Empty() const; // Called by Pop() when buffer is empty
 
-    virtual void Empty() const;	// Called by Pop() when buffer is empty
+  void Push(
+      const Flit &flit); // Push a flit. Calls Drop method if buffer is full
 
-    void Push(const Flit & flit);	// Push a flit. Calls Drop method if buffer is full
+  Flit Pop(); // Pop a flit
 
-    Flit Pop();		// Pop a flit
+  Flit Front() const; // Return a copy of the first flit in the buffer
 
-    Flit Front() const;	// Return a copy of the first flit in the buffer
+  unsigned int Size() const;
 
-    unsigned int Size() const;
+  void ShowStats(std::ostream &out);
 
-    void ShowStats(std::ostream & out);
+  void Disable();
 
-    void Disable();
+  void Print(const char *);
 
+  bool deadlockFree();
+  void deadlockCheck();
 
-    void Print(const char*);
-    
-    bool deadlockFree();
-    void deadlockCheck();
+  inline string name() { return "Buffer"; };
 
+ private:
+  bool true_buffer;
 
-    inline string name() { return "Buffer";};
+  int full_cycles_counter;
+  int last_front_flit_seq;
 
+  unsigned int max_buffer_size;
 
-  private:
+  queue<Flit> buffer;
 
-    bool true_buffer;
+  unsigned int max_occupancy;
+  double hold_time, last_event, hold_time_sum;
+  double mean_occupancy;
+  int previous_occupancy;
 
-
-    int full_cycles_counter;
-    int last_front_flit_seq;
-
-    unsigned int max_buffer_size;
-
-    queue < Flit > buffer;
-
-    unsigned int max_occupancy;
-    double hold_time, last_event, hold_time_sum;
-    double mean_occupancy;
-    int    previous_occupancy;
-    
-    void SaveOccupancyAndTime();
-    void UpdateMeanOccupancy();
+  void SaveOccupancyAndTime();
+  void UpdateMeanOccupancy();
 };
 
 #endif

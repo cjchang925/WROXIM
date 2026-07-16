@@ -1,0 +1,12 @@
+BasedOnStyle: Google
+IndentWidth: 2
+UseTab: Never
+ColumnLimit: 80
+BreakBeforeBraces: Attach
+PointerAlignment: Right
+ReferenceAlignment: Right
+AllowShortIfStatementsOnASingleLine: Never
+SpacesBeforeTrailingComments: 1
+IndentCaseLabels: false
+KeepEmptyLines:
+  AtStartOfBlock: true

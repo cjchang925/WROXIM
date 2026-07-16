@@ -2,38 +2,39 @@
 #define __UTILS_H__
 
 #include <systemc.h>
+
+#include <iomanip>
 #include <tlm>
 
 #include "DataStructs.h"
-#include <iomanip>
 
 #ifdef DEBUG
 
-#define LOG (std::cout << std::setw(7) << left << sc_time_stamp().to_double() / GlobalParams::clock_period_ps << " " << name() << "::" << __func__ << "() --> ")
+#define LOG                                                                 \
+  (std::cout << std::setw(7) << left                                        \
+             << sc_time_stamp().to_double() / GlobalParams::clock_period_ps \
+             << " " << name() << "::" << __func__ << "() --> ")
 
 #else
-template <class cT, class traits = std::char_traits<cT>>
-class basic_nullbuf : public std::basic_streambuf<cT, traits>
-{
-    typename traits::int_type overflow(typename traits::int_type c)
-    {
-        return traits::not_eof(c); // indicate success
-    }
+template <class cT, class traits = std::char_traits<cT> >
+class basic_nullbuf : public std::basic_streambuf<cT, traits> {
+  typename traits::int_type overflow(typename traits::int_type c) {
+    return traits::not_eof(c); // indicate success
+  }
 };
 
-template <class cT, class traits = std::char_traits<cT>>
-class basic_onullstream : public std::basic_ostream<cT, traits>
-{
-public:
-    basic_onullstream() : std::basic_ios<cT, traits>(&m_sbuf),
-                          std::basic_ostream<cT, traits>(&m_sbuf)
-    {
-        // note: the original code is missing the required this->
-        this->init(&m_sbuf);
-    }
+template <class cT, class traits = std::char_traits<cT> >
+class basic_onullstream : public std::basic_ostream<cT, traits> {
+ public:
+  basic_onullstream()
+      : std::basic_ios<cT, traits>(&m_sbuf),
+        std::basic_ostream<cT, traits>(&m_sbuf) {
+    // note: the original code is missing the required this->
+    this->init(&m_sbuf);
+  }
 
-private:
-    basic_nullbuf<cT, traits> m_sbuf;
+ private:
+  basic_nullbuf<cT, traits> m_sbuf;
 };
 
 typedef basic_onullstream<char> onullstream;
@@ -45,207 +46,193 @@ static onullstream LOG;
 
 // Output overloading
 
-inline ostream &operator<<(ostream &os, const Flit &flit)
-{
+inline ostream &operator<<(ostream &os, const Flit &flit) {
 
-    if (GlobalParams::verbose_mode == VERBOSE_HIGH)
-    {
+  if (GlobalParams::verbose_mode == VERBOSE_HIGH) {
 
-        os << "### FLIT ###" << endl;
-        os << "Source Tile[" << flit.src_id << "]" << endl;
-        os << "Destination Tile[" << flit.dst_id << "]" << endl;
-        switch (flit.flit_type)
-        {
-        case FLIT_TYPE_HEAD:
-            os << "Flit Type is HEAD" << endl;
-            break;
-        case FLIT_TYPE_BODY:
-            os << "Flit Type is BODY" << endl;
-            break;
-        case FLIT_TYPE_TAIL:
-            os << "Flit Type is TAIL" << endl;
-            break;
-        case FLIT_TYPE_FLOWCONTROL: // Added by JengDe
-            os << "Flit Type is FLOWCONTROL" << endl;
-            break;
-        }
-        os << "Sequence no. " << flit.sequence_no << endl;
-        os << "Payload printing not implemented (yet)." << endl;
-        os << "Unix timestamp at packet generation " << flit.timestamp << endl;
-        os << "Total number of hops from source to destination is " << flit.hop_no << endl;
+    os << "### FLIT ###" << endl;
+    os << "Source Tile[" << flit.src_id << "]" << endl;
+    os << "Destination Tile[" << flit.dst_id << "]" << endl;
+    switch (flit.flit_type) {
+    case FLIT_TYPE_HEAD:
+      os << "Flit Type is HEAD" << endl;
+      break;
+    case FLIT_TYPE_BODY:
+      os << "Flit Type is BODY" << endl;
+      break;
+    case FLIT_TYPE_TAIL:
+      os << "Flit Type is TAIL" << endl;
+      break;
+    case FLIT_TYPE_FLOWCONTROL: // Added by JengDe
+      os << "Flit Type is FLOWCONTROL" << endl;
+      break;
     }
-    else
-    {
-        os << "(";
-        switch (flit.flit_type)
-        {
-        case FLIT_TYPE_HEAD:
-            os << "H";
-            break;
-        case FLIT_TYPE_BODY:
-            os << "B";
-            break;
-        case FLIT_TYPE_TAIL:
-            os << "T";
-            break;
-        case FLIT_TYPE_FLOWCONTROL: // Added by JengDe
-            os << "F";
-            break;
-        }
-        if (flit.flit_type == FLIT_TYPE_FLOWCONTROL)
-            os << flit.sequence_no << ", " << flit.src_id << "->" << flit.dst_id << ", " << flit.flow_control << ")";
-        else
-            os << flit.sequence_no << ", " << flit.src_id << "->" << flit.dst_id << ")";
+    os << "Sequence no. " << flit.sequence_no << endl;
+    os << "Payload printing not implemented (yet)." << endl;
+    os << "Unix timestamp at packet generation " << flit.timestamp << endl;
+    os << "Total number of hops from source to destination is " << flit.hop_no
+       << endl;
+  } else {
+    os << "(";
+    switch (flit.flit_type) {
+    case FLIT_TYPE_HEAD:
+      os << "H";
+      break;
+    case FLIT_TYPE_BODY:
+      os << "B";
+      break;
+    case FLIT_TYPE_TAIL:
+      os << "T";
+      break;
+    case FLIT_TYPE_FLOWCONTROL: // Added by JengDe
+      os << "F";
+      break;
     }
-
-    return os;
-}
-
-inline ostream &operator<<(ostream &os,
-                           const ChannelStatus &status)
-{
-    char msg;
-    if (status.available)
-        msg = 'A';
+    if (flit.flit_type == FLIT_TYPE_FLOWCONTROL)
+      os << flit.sequence_no << ", " << flit.src_id << "->" << flit.dst_id
+         << ", " << flit.flow_control << ")";
     else
-        msg = 'N';
-    os << msg << "(" << status.free_slots << ")";
-    return os;
+      os << flit.sequence_no << ", " << flit.src_id << "->" << flit.dst_id
+         << ")";
+  }
+
+  return os;
 }
 
-inline ostream &operator<<(ostream &os, const NoP_data &NoP_data)
-{
-    os << "      NoP data from [" << NoP_data.sender_id << "] [ ";
-
-    for (int j = 0; j < DIRECTIONS; j++)
-        os << NoP_data.channel_status_neighbor[j] << " ";
-
-    os << "]" << endl;
-    return os;
+inline ostream &operator<<(ostream &os, const ChannelStatus &status) {
+  char msg;
+  if (status.available)
+    msg = 'A';
+  else
+    msg = 'N';
+  os << msg << "(" << status.free_slots << ")";
+  return os;
 }
 
-inline ostream &operator<<(ostream &os, const Coord &coord)
-{
-    os << "(" << coord.x << "," << coord.y << ")";
+inline ostream &operator<<(ostream &os, const NoP_data &NoP_data) {
+  os << "      NoP data from [" << NoP_data.sender_id << "] [ ";
 
-    return os;
+  for (int j = 0; j < DIRECTIONS; j++)
+    os << NoP_data.channel_status_neighbor[j] << " ";
+
+  os << "]" << endl;
+  return os;
 }
 
-inline ostream &operator<<(ostream &os, const ACK &ack)
-{
-    os << "(ACK:" << ack.value << "," << ack.src_id << "->" << ack.dst_id << ")";
+inline ostream &operator<<(ostream &os, const Coord &coord) {
+  os << "(" << coord.x << "," << coord.y << ")";
 
-    return os;
+  return os;
+}
+
+inline ostream &operator<<(ostream &os, const ACK &ack) {
+  os << "(ACK:" << ack.value << "," << ack.src_id << "->" << ack.dst_id << ")";
+
+  return os;
 }
 
 // Trace overloading
 
-inline void sc_trace(sc_trace_file *&tf, const Flit &flit, string &name)
-{
-    sc_trace(tf, flit.src_id, name + ".src_id");
-    sc_trace(tf, flit.dst_id, name + ".dst_id");
-    sc_trace(tf, flit.sequence_no, name + ".sequence_no");
-    sc_trace(tf, flit.timestamp, name + ".timestamp");
-    sc_trace(tf, flit.hop_no, name + ".hop_no");
+inline void sc_trace(sc_trace_file *&tf, const Flit &flit, string &name) {
+  sc_trace(tf, flit.src_id, name + ".src_id");
+  sc_trace(tf, flit.dst_id, name + ".dst_id");
+  sc_trace(tf, flit.sequence_no, name + ".sequence_no");
+  sc_trace(tf, flit.timestamp, name + ".timestamp");
+  sc_trace(tf, flit.hop_no, name + ".hop_no");
 }
 
-inline void sc_trace(sc_trace_file *&tf, const NoP_data &NoP_data, string &name)
-{
-    sc_trace(tf, NoP_data.sender_id, name + ".sender_id");
+inline void sc_trace(sc_trace_file *&tf, const NoP_data &NoP_data,
+                     string &name) {
+  sc_trace(tf, NoP_data.sender_id, name + ".sender_id");
 }
 
-inline void sc_trace(sc_trace_file *&tf, const ChannelStatus &bs, string &name)
-{
-    sc_trace(tf, bs.free_slots, name + ".free_slots");
-    sc_trace(tf, bs.available, name + ".available");
+inline void sc_trace(sc_trace_file *&tf, const ChannelStatus &bs,
+                     string &name) {
+  sc_trace(tf, bs.free_slots, name + ".free_slots");
+  sc_trace(tf, bs.available, name + ".available");
 }
 
-inline void sc_trace(sc_trace_file *tf, const ACK &ack, const std::string &name)
-{
-    sc_trace(tf, ack.src_id, name + ".src_id");
-    sc_trace(tf, ack.dst_id, name + ".dst_id");
-    sc_trace(tf, ack.value, name + ".value");
+inline void sc_trace(sc_trace_file *tf, const ACK &ack,
+                     const std::string &name) {
+  sc_trace(tf, ack.src_id, name + ".src_id");
+  sc_trace(tf, ack.dst_id, name + ".dst_id");
+  sc_trace(tf, ack.value, name + ".value");
 }
 
 // Misc common functions
 
-inline Coord id2Coord(int id)
-{
-    Coord coord;
+inline Coord id2Coord(int id) {
+  Coord coord;
 
-    coord.x = id % GlobalParams::mesh_dim_x;
-    coord.y = id / GlobalParams::mesh_dim_x;
+  coord.x = id % GlobalParams::mesh_dim_x;
+  coord.y = id / GlobalParams::mesh_dim_x;
 
-    assert(coord.x < GlobalParams::mesh_dim_x);
-    assert(coord.y < GlobalParams::mesh_dim_y);
+  assert(coord.x < GlobalParams::mesh_dim_x);
+  assert(coord.y < GlobalParams::mesh_dim_y);
 
-    return coord;
+  return coord;
 }
 
-inline int coord2Id(const Coord &coord)
-{
-    int id = (coord.y * GlobalParams::mesh_dim_x) + coord.x;
+inline int coord2Id(const Coord &coord) {
+  int id = (coord.y * GlobalParams::mesh_dim_x) + coord.x;
 
-    assert(id < GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y);
+  assert(id < GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y);
 
-    return id;
+  return id;
 }
 
-inline bool sameRadioHub(int id1, int id2)
-{
-    map<int, int>::iterator it1 = GlobalParams::hub_for_tile.find(id1);
-    map<int, int>::iterator it2 = GlobalParams::hub_for_tile.find(id2);
+inline bool sameRadioHub(int id1, int id2) {
+  map<int, int>::iterator it1 = GlobalParams::hub_for_tile.find(id1);
+  map<int, int>::iterator it2 = GlobalParams::hub_for_tile.find(id2);
 
-    assert((it1 != GlobalParams::hub_for_tile.end()) && "Specified Tile is not connected to any Hub");
-    assert((it2 != GlobalParams::hub_for_tile.end()) && "Specified Tile is not connected to any Hub");
+  assert((it1 != GlobalParams::hub_for_tile.end()) &&
+         "Specified Tile is not connected to any Hub");
+  assert((it2 != GlobalParams::hub_for_tile.end()) &&
+         "Specified Tile is not connected to any Hub");
 
-    return (it1->second == it2->second);
+  return (it1->second == it2->second);
 }
 
-inline bool hasRadioHub(int id)
-{
-    map<int, int>::iterator it = GlobalParams::hub_for_tile.find(id);
+inline bool hasRadioHub(int id) {
+  map<int, int>::iterator it = GlobalParams::hub_for_tile.find(id);
 
-    return (it != GlobalParams::hub_for_tile.end());
+  return (it != GlobalParams::hub_for_tile.end());
 }
 
-inline int tile2Hub(int id)
-{
-    map<int, int>::iterator it = GlobalParams::hub_for_tile.find(id);
-    assert((it != GlobalParams::hub_for_tile.end()) && "Specified Tile is not connected to any Hub");
-    return it->second;
+inline int tile2Hub(int id) {
+  map<int, int>::iterator it = GlobalParams::hub_for_tile.find(id);
+  assert((it != GlobalParams::hub_for_tile.end()) &&
+         "Specified Tile is not connected to any Hub");
+  return it->second;
 }
 
-inline int selectChannel(int src_hub, int dst_hub)
-{
+inline int selectChannel(int src_hub, int dst_hub) {
 
-    vector<int> &first = GlobalParams::hub_configuration[src_hub].txChannels;
-    vector<int> &second = GlobalParams::hub_configuration[dst_hub].rxChannels;
+  vector<int> &first = GlobalParams::hub_configuration[src_hub].txChannels;
+  vector<int> &second = GlobalParams::hub_configuration[dst_hub].rxChannels;
 
-    vector<int> intersection;
+  vector<int> intersection;
 
-    for (unsigned int i = 0; i < first.size(); i++)
-    {
-        for (unsigned int j = 0; j < second.size(); j++)
-        {
-            if (first[i] == second[j])
-                intersection.push_back(first[i]);
-        }
+  for (unsigned int i = 0; i < first.size(); i++) {
+    for (unsigned int j = 0; j < second.size(); j++) {
+      if (first[i] == second[j])
+        intersection.push_back(first[i]);
     }
+  }
 
-    if (intersection.size() == 0)
-        return NOT_VALID;
+  if (intersection.size() == 0)
+    return NOT_VALID;
 
-    return intersection[rand() % intersection.size()];
+  return intersection[rand() % intersection.size()];
 }
 
-inline void printMap(string label, const map<string, double> &m, std::ostream &out)
-{
-    out << label << " = [" << endl;
-    for (map<string, double>::const_iterator i = m.begin(); i != m.end(); i++)
-        out << "\t" << std::scientific << i->second << "\t % " << i->first << endl;
+inline void printMap(string label, const map<string, double> &m,
+                     std::ostream &out) {
+  out << label << " = [" << endl;
+  for (map<string, double>::const_iterator i = m.begin(); i != m.end(); i++)
+    out << "\t" << std::scientific << i->second << "\t % " << i->first << endl;
 
-    out << "];" << endl;
+  out << "];" << endl;
 }
 
 #endif

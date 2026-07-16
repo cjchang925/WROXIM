@@ -10,886 +10,952 @@
 
 #include "NoC.h"
 
-void NoC::buildMesh()
-{
+void NoC::buildMesh() {
 
-	// token_ring = new TokenRing("tokenring");
-	// token_ring->clock(clock);
-	// token_ring->reset(reset);
+  // token_ring = new TokenRing("tokenring");
+  // token_ring->clock(clock);
+  // token_ring->reset(reset);
 
-	// char channel_name[16];
-	// for (map<int, ChannelConfig>::iterator it = GlobalParams::channel_configuration.begin();
-	//         it != GlobalParams::channel_configuration.end();
-	//         ++it)
-	// {
-	//     int channel_id = it->first;
-	//     sprintf(channel_name, "Channel_%d", channel_id);
-	//     channel[channel_id] = new Channel(channel_name, channel_id);
-	// }
+  // char channel_name[16];
+  // for (map<int, ChannelConfig>::iterator it =
+  // GlobalParams::channel_configuration.begin();
+  //         it != GlobalParams::channel_configuration.end();
+  //         ++it)
+  // {
+  //     int channel_id = it->first;
+  //     sprintf(channel_name, "Channel_%d", channel_id);
+  //     channel[channel_id] = new Channel(channel_name, channel_id);
+  // }
 
-	// char hub_name[16];
-	// for (map<int, HubConfig>::iterator it = GlobalParams::hub_configuration.begin();
-	//         it != GlobalParams::hub_configuration.end();
-	//         ++it)
-	// {
-	//     int hub_id = it->first;
-	//     HubConfig hub_config = it->second;
+  // char hub_name[16];
+  // for (map<int, HubConfig>::iterator it =
+  // GlobalParams::hub_configuration.begin();
+  //         it != GlobalParams::hub_configuration.end();
+  //         ++it)
+  // {
+  //     int hub_id = it->first;
+  //     HubConfig hub_config = it->second;
 
-	//     sprintf(hub_name, "Hub_%d", hub_id);
-	//     hub[hub_id] = new Hub(hub_name, hub_id,token_ring);
-	//     hub[hub_id]->clock(clock);
-	//     hub[hub_id]->reset(reset);
+  //     sprintf(hub_name, "Hub_%d", hub_id);
+  //     hub[hub_id] = new Hub(hub_name, hub_id,token_ring);
+  //     hub[hub_id]->clock(clock);
+  //     hub[hub_id]->reset(reset);
 
-	//     // Determine, from configuration file, which Hub is connected to which Tile
-	//     for(vector<int>::iterator iit = hub_config.attachedNodes.begin();
-	//             iit != hub_config.attachedNodes.end();
-	//             ++iit)
-	//     {
-	//         GlobalParams::hub_for_tile[*iit] = hub_id;
-	//     }
+  //     // Determine, from configuration file, which Hub is connected to which
+  //     Tile for(vector<int>::iterator iit = hub_config.attachedNodes.begin();
+  //             iit != hub_config.attachedNodes.end();
+  //             ++iit)
+  //     {
+  //         GlobalParams::hub_for_tile[*iit] = hub_id;
+  //     }
 
-	//     // Determine, from configuration file, which Hub is connected to which Channel
-	//     for(vector<int>::iterator iit = hub_config.txChannels.begin();
-	//             iit != hub_config.txChannels.end();
-	//             ++iit)
-	//     {
-	//         int channel_id = *iit;
-	//         //LOG << "Binding " << hub[hub_id]->name() << " to txChannel " << channel_id << endl;
-	//         hub[hub_id]->init[channel_id]->socket.bind(channel[channel_id]->targ_socket);
-	//         //LOG << "Binding " << hub[hub_id]->name() << " to txChannel " << channel_id << endl;
-	//         hub[hub_id]->setFlitTransmissionCycles(channel[channel_id]->getFlitTransmissionCycles(),channel_id);
-	//     }
+  //     // Determine, from configuration file, which Hub is connected to which
+  //     Channel for(vector<int>::iterator iit = hub_config.txChannels.begin();
+  //             iit != hub_config.txChannels.end();
+  //             ++iit)
+  //     {
+  //         int channel_id = *iit;
+  //         //LOG << "Binding " << hub[hub_id]->name() << " to txChannel " <<
+  //         channel_id << endl;
+  //         hub[hub_id]->init[channel_id]->socket.bind(channel[channel_id]->targ_socket);
+  //         //LOG << "Binding " << hub[hub_id]->name() << " to txChannel " <<
+  //         channel_id << endl;
+  //         hub[hub_id]->setFlitTransmissionCycles(channel[channel_id]->getFlitTransmissionCycles(),channel_id);
+  //     }
 
-	//     for(vector<int>::iterator iit = hub_config.rxChannels.begin();
-	//             iit != hub_config.rxChannels.end();
-	//             ++iit)
-	//     {
-	//         int channel_id = *iit;
-	//         //LOG << "Binding " << hub[hub_id]->name() << " to rxChannel " << channel_id << endl;
-	//         channel[channel_id]->init_socket.bind(hub[hub_id]->target[channel_id]->socket);
-	//         channel[channel_id]->addHub(hub[hub_id]);
-	//     }
+  //     for(vector<int>::iterator iit = hub_config.rxChannels.begin();
+  //             iit != hub_config.rxChannels.end();
+  //             ++iit)
+  //     {
+  //         int channel_id = *iit;
+  //         //LOG << "Binding " << hub[hub_id]->name() << " to rxChannel " <<
+  //         channel_id << endl;
+  //         channel[channel_id]->init_socket.bind(hub[hub_id]->target[channel_id]->socket);
+  //         channel[channel_id]->addHub(hub[hub_id]);
+  //     }
 
-	// // TODO FIX
-	// // Hub Power model does not currently support different data rates for single hub
-	// // If multiple channels are connected to an Hub, the data rate
-	// // of the first channel will be used as default
+  // // TODO FIX
+  // // Hub Power model does not currently support different data rates for
+  // single hub
+  // // If multiple channels are connected to an Hub, the data rate
+  // // of the first channel will be used as default
 
-	// int no_channels = hub_config.txChannels.size();
+  // int no_channels = hub_config.txChannels.size();
 
-	// if (no_channels > 1)
-	// {
-	//     cerr << " WARNING: Power model currently not supporting multi-channel per hub, using default_tx_energy" << endl;
-	// }
+  // if (no_channels > 1)
+  // {
+  //     cerr << " WARNING: Power model currently not supporting multi-channel
+  //     per hub, using default_tx_energy" << endl;
+  // }
 
-	// int data_rate_gbs;
+  // int data_rate_gbs;
 
-	// if (no_channels > 0) {
-	//     data_rate_gbs = GlobalParams::channel_configuration[hub_config.txChannels[0]].dataRate;
-	// }
-	// else
-	//     data_rate_gbs = NOT_VALID;
+  // if (no_channels > 0) {
+  //     data_rate_gbs =
+  //     GlobalParams::channel_configuration[hub_config.txChannels[0]].dataRate;
+  // }
+  // else
+  //     data_rate_gbs = NOT_VALID;
 
-	// // TODO: update power model (configureHub to support different
-	// // tx/tx buffer depth
-	// assert(GlobalParams::hub_configuration[hub_id].rxBufferSize==GlobalParams::hub_configuration[hub_id].txBufferSize);
+  // // TODO: update power model (configureHub to support different
+  // // tx/tx buffer depth
+  // assert(GlobalParams::hub_configuration[hub_id].rxBufferSize==GlobalParams::hub_configuration[hub_id].txBufferSize);
 
-	// hub[hub_id]->power.configureHub(GlobalParams::flit_size,
-	// 	                        GlobalParams::hub_configuration[hub_id].toTileBufferSize,
-	// 	                        GlobalParams::hub_configuration[hub_id].fromTileBufferSize,
-	// 				GlobalParams::flit_size,
-	// 				GlobalParams::hub_configuration[hub_id].rxBufferSize,
-	// 				GlobalParams::flit_size,
-	// 				data_rate_gbs);
+  // hub[hub_id]->power.configureHub(GlobalParams::flit_size,
+  // 	                        GlobalParams::hub_configuration[hub_id].toTileBufferSize,
+  // 	                        GlobalParams::hub_configuration[hub_id].fromTileBufferSize,
+  // 				GlobalParams::flit_size,
+  // 				GlobalParams::hub_configuration[hub_id].rxBufferSize,
+  // 				GlobalParams::flit_size,
+  // 				data_rate_gbs);
 
-	// }
+  // }
 
-	// Check for routing table availability
-	if (GlobalParams::routing_algorithm == ROUTING_TABLE_BASED)
-		assert(grtable.load(GlobalParams::routing_table_filename.c_str()));
+  // Check for routing table availability
+  if (GlobalParams::routing_algorithm == ROUTING_TABLE_BASED)
+    assert(grtable.load(GlobalParams::routing_table_filename.c_str()));
 
-	// Check for traffic table availability
-	if (GlobalParams::traffic_distribution == TRAFFIC_TABLE_BASED)
-		assert(gttable.load(GlobalParams::traffic_table_filename.c_str()));
+  // Check for traffic table availability
+  if (GlobalParams::traffic_distribution == TRAFFIC_TABLE_BASED)
+    assert(gttable.load(GlobalParams::traffic_table_filename.c_str()));
 
-	// Var to track Hub connected ports
-	// int * hub_connected_ports = (int *) calloc(GlobalParams::hub_configuration.size(), sizeof(int));
+  // Var to track Hub connected ports
+  // int * hub_connected_ports = (int *)
+  // calloc(GlobalParams::hub_configuration.size(), sizeof(int));
 
-	// Initialize signals
-	int dimX = GlobalParams::mesh_dim_x + 1;
-	int dimY = GlobalParams::mesh_dim_y + 1;
+  // Initialize signals
+  int dimX = GlobalParams::mesh_dim_x + 1;
+  int dimY = GlobalParams::mesh_dim_y + 1;
 
-	req = new sc_signal_NSWEH<bool> *[dimX];
-	ack = new sc_signal_NSWEH<bool> *[dimX];
-	flit = new sc_signal_NSWEH<Flit> *[dimX];
+  req = new sc_signal_NSWEH<bool> *[dimX];
+  ack = new sc_signal_NSWEH<bool> *[dimX];
+  flit = new sc_signal_NSWEH<Flit> *[dimX];
 
-	free_slots = new sc_signal_NSWE<int> *[dimX];
-	nop_data = new sc_signal_NSWE<NoP_data> *[dimX];
+  free_slots = new sc_signal_NSWE<int> *[dimX];
+  nop_data = new sc_signal_NSWE<NoP_data> *[dimX];
 
-	for (int i = 0; i < dimX; i++)
-	{
-		req[i] = new sc_signal_NSWEH<bool>[dimY];
-		ack[i] = new sc_signal_NSWEH<bool>[dimY];
-		flit[i] = new sc_signal_NSWEH<Flit>[dimY];
+  for (int i = 0; i < dimX; i++) {
+    req[i] = new sc_signal_NSWEH<bool>[dimY];
+    ack[i] = new sc_signal_NSWEH<bool>[dimY];
+    flit[i] = new sc_signal_NSWEH<Flit>[dimY];
 
-		free_slots[i] = new sc_signal_NSWE<int>[dimY];
-		nop_data[i] = new sc_signal_NSWE<NoP_data>[dimY];
-	}
+    free_slots[i] = new sc_signal_NSWE<int>[dimY];
+    nop_data[i] = new sc_signal_NSWE<NoP_data>[dimY];
+  }
 
-	t = new Tile **[GlobalParams::mesh_dim_x];
-	for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
-	{
-		t[i] = new Tile *[GlobalParams::mesh_dim_y];
-	}
+  t = new Tile **[GlobalParams::mesh_dim_x];
+  for (int i = 0; i < GlobalParams::mesh_dim_x; i++) {
+    t[i] = new Tile *[GlobalParams::mesh_dim_y];
+  }
 
-	// Create the mesh as a matrix of tiles
-	for (int j = 0; j < GlobalParams::mesh_dim_y; j++)
-	{
-		for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
-		{
-			// Create the single Tile with a proper name
-			char tile_name[20];
-			Coord tile_coord;
-			tile_coord.x = i;
-			tile_coord.y = j;
-			int tile_id = coord2Id(tile_coord);
-			sprintf(tile_name, "Tile[%02d][%02d]_(#%d)", i, j, tile_id);
-			t[i][j] = new Tile(tile_name, tile_id);
+  // Create the mesh as a matrix of tiles
+  for (int j = 0; j < GlobalParams::mesh_dim_y; j++) {
+    for (int i = 0; i < GlobalParams::mesh_dim_x; i++) {
+      // Create the single Tile with a proper name
+      char tile_name[20];
+      Coord tile_coord;
+      tile_coord.x = i;
+      tile_coord.y = j;
+      int tile_id = coord2Id(tile_coord);
+      sprintf(tile_name, "Tile[%02d][%02d]_(#%d)", i, j, tile_id);
+      t[i][j] = new Tile(tile_name, tile_id);
 
-			// Tell to the router its coordinates
-			t[i][j]->r->configure(j * GlobalParams::mesh_dim_x + i,
-								  GlobalParams::stats_warm_up_time,
-								  GlobalParams::buffer_depth,
-								  grtable);
-			t[i][j]->r->power.configureRouter(GlobalParams::flit_size,
-											  GlobalParams::buffer_depth,
-											  GlobalParams::flit_size,
-											  string(GlobalParams::routing_algorithm),
-											  "default");
+      // Tell to the router its coordinates
+      t[i][j]->r->configure(j * GlobalParams::mesh_dim_x + i,
+                            GlobalParams::stats_warm_up_time,
+                            GlobalParams::buffer_depth, grtable);
+      t[i][j]->r->power.configureRouter(
+          GlobalParams::flit_size, GlobalParams::buffer_depth,
+          GlobalParams::flit_size, string(GlobalParams::routing_algorithm),
+          "default");
 
-			// Tell to the PE its coordinates
-			t[i][j]->pe->local_id = j * GlobalParams::mesh_dim_x + i;
-			t[i][j]->pe->traffic_table = &gttable; // Needed to choose destination
-			t[i][j]->pe->never_transmit = (gttable.occurrencesAsSource(t[i][j]->pe->local_id) == 0);
+      // Tell to the PE its coordinates
+      t[i][j]->pe->local_id = j * GlobalParams::mesh_dim_x + i;
+      t[i][j]->pe->traffic_table = &gttable; // Needed to choose destination
+      t[i][j]->pe->never_transmit =
+          (gttable.occurrencesAsSource(t[i][j]->pe->local_id) == 0);
 
-			// Map clock and reset
-			t[i][j]->clock(clock);
-			t[i][j]->reset(reset);
+      // Map clock and reset
+      t[i][j]->clock(clock);
+      t[i][j]->reset(reset);
 
-			// Map Rx signals
-			t[i][j]->req_rx[DIRECTION_NORTH](req[i][j].south);	 // in
-			t[i][j]->flit_rx[DIRECTION_NORTH](flit[i][j].south); // in
-			t[i][j]->ack_rx[DIRECTION_NORTH](ack[i][j].north);	 // out
+      // Map Rx signals
+      t[i][j]->req_rx[DIRECTION_NORTH](req[i][j].south);   // in
+      t[i][j]->flit_rx[DIRECTION_NORTH](flit[i][j].south); // in
+      t[i][j]->ack_rx[DIRECTION_NORTH](ack[i][j].north);   // out
 
-			t[i][j]->req_rx[DIRECTION_EAST](req[i + 1][j].west);
-			t[i][j]->flit_rx[DIRECTION_EAST](flit[i + 1][j].west);
-			t[i][j]->ack_rx[DIRECTION_EAST](ack[i + 1][j].east);
+      t[i][j]->req_rx[DIRECTION_EAST](req[i + 1][j].west);
+      t[i][j]->flit_rx[DIRECTION_EAST](flit[i + 1][j].west);
+      t[i][j]->ack_rx[DIRECTION_EAST](ack[i + 1][j].east);
 
-			t[i][j]->req_rx[DIRECTION_SOUTH](req[i][j + 1].north);
-			t[i][j]->flit_rx[DIRECTION_SOUTH](flit[i][j + 1].north);
-			t[i][j]->ack_rx[DIRECTION_SOUTH](ack[i][j + 1].south);
+      t[i][j]->req_rx[DIRECTION_SOUTH](req[i][j + 1].north);
+      t[i][j]->flit_rx[DIRECTION_SOUTH](flit[i][j + 1].north);
+      t[i][j]->ack_rx[DIRECTION_SOUTH](ack[i][j + 1].south);
 
-			t[i][j]->req_rx[DIRECTION_WEST](req[i][j].east);
-			t[i][j]->flit_rx[DIRECTION_WEST](flit[i][j].east);
-			t[i][j]->ack_rx[DIRECTION_WEST](ack[i][j].west);
+      t[i][j]->req_rx[DIRECTION_WEST](req[i][j].east);
+      t[i][j]->flit_rx[DIRECTION_WEST](flit[i][j].east);
+      t[i][j]->ack_rx[DIRECTION_WEST](ack[i][j].west);
 
-			// Map Tx signals
-			t[i][j]->req_tx[DIRECTION_NORTH](req[i][j].north);
-			t[i][j]->flit_tx[DIRECTION_NORTH](flit[i][j].north);
-			t[i][j]->ack_tx[DIRECTION_NORTH](ack[i][j].south);
+      // Map Tx signals
+      t[i][j]->req_tx[DIRECTION_NORTH](req[i][j].north);
+      t[i][j]->flit_tx[DIRECTION_NORTH](flit[i][j].north);
+      t[i][j]->ack_tx[DIRECTION_NORTH](ack[i][j].south);
 
-			t[i][j]->req_tx[DIRECTION_EAST](req[i + 1][j].east);
-			t[i][j]->flit_tx[DIRECTION_EAST](flit[i + 1][j].east);
-			t[i][j]->ack_tx[DIRECTION_EAST](ack[i + 1][j].west);
+      t[i][j]->req_tx[DIRECTION_EAST](req[i + 1][j].east);
+      t[i][j]->flit_tx[DIRECTION_EAST](flit[i + 1][j].east);
+      t[i][j]->ack_tx[DIRECTION_EAST](ack[i + 1][j].west);
 
-			t[i][j]->req_tx[DIRECTION_SOUTH](req[i][j + 1].south);
-			t[i][j]->flit_tx[DIRECTION_SOUTH](flit[i][j + 1].south);
-			t[i][j]->ack_tx[DIRECTION_SOUTH](ack[i][j + 1].north);
+      t[i][j]->req_tx[DIRECTION_SOUTH](req[i][j + 1].south);
+      t[i][j]->flit_tx[DIRECTION_SOUTH](flit[i][j + 1].south);
+      t[i][j]->ack_tx[DIRECTION_SOUTH](ack[i][j + 1].north);
 
-			t[i][j]->req_tx[DIRECTION_WEST](req[i][j].west);
-			t[i][j]->flit_tx[DIRECTION_WEST](flit[i][j].west);
-			t[i][j]->ack_tx[DIRECTION_WEST](ack[i][j].east);
+      t[i][j]->req_tx[DIRECTION_WEST](req[i][j].west);
+      t[i][j]->flit_tx[DIRECTION_WEST](flit[i][j].west);
+      t[i][j]->ack_tx[DIRECTION_WEST](ack[i][j].east);
 
-			// // TODO: check if hub signal is always required
-			// // signals/port when tile receives(rx) from hub
-			// t[i][j]->hub_req_rx(req[i][j].from_hub);
-			// t[i][j]->hub_flit_rx(flit[i][j].from_hub);
-			// t[i][j]->hub_ack_rx(ack[i][j].to_hub);
+      // // TODO: check if hub signal is always required
+      // // signals/port when tile receives(rx) from hub
+      // t[i][j]->hub_req_rx(req[i][j].from_hub);
+      // t[i][j]->hub_flit_rx(flit[i][j].from_hub);
+      // t[i][j]->hub_ack_rx(ack[i][j].to_hub);
 
-			// // signals/port when tile transmits(tx) to hub
-			// t[i][j]->hub_req_tx(req[i][j].to_hub); // 7, sc_out
-			// t[i][j]->hub_flit_tx(flit[i][j].to_hub);
-			// t[i][j]->hub_ack_tx(ack[i][j].from_hub);
+      // // signals/port when tile transmits(tx) to hub
+      // t[i][j]->hub_req_tx(req[i][j].to_hub); // 7, sc_out
+      // t[i][j]->hub_flit_tx(flit[i][j].to_hub);
+      // t[i][j]->hub_ack_tx(ack[i][j].from_hub);
 
-			// // TODO: Review port index. Connect each Hub to all its Channels
-			// map<int, int>::iterator it = GlobalParams::hub_for_tile.find(tile_id);
-			// if (it != GlobalParams::hub_for_tile.end())
-			// {
-			//     int hub_id = GlobalParams::hub_for_tile[tile_id];
+      // // TODO: Review port index. Connect each Hub to all its Channels
+      // map<int, int>::iterator it = GlobalParams::hub_for_tile.find(tile_id);
+      // if (it != GlobalParams::hub_for_tile.end())
+      // {
+      //     int hub_id = GlobalParams::hub_for_tile[tile_id];
 
-			//     // The next time that the same HUB is considered, the next
-			//     // port will be connected
-			//     int port = hub_connected_ports[hub_id]++;
+      //     // The next time that the same HUB is considered, the next
+      //     // port will be connected
+      //     int port = hub_connected_ports[hub_id]++;
 
-			//     hub[hub_id]->tile2port_mapping[t[i][j]->local_id] = port;
+      //     hub[hub_id]->tile2port_mapping[t[i][j]->local_id] = port;
 
-			//     hub[hub_id]->req_rx[port](req[i][j].to_hub);
-			//     hub[hub_id]->flit_rx[port](flit[i][j].to_hub);
-			//     hub[hub_id]->ack_rx[port](ack[i][j].from_hub);
+      //     hub[hub_id]->req_rx[port](req[i][j].to_hub);
+      //     hub[hub_id]->flit_rx[port](flit[i][j].to_hub);
+      //     hub[hub_id]->ack_rx[port](ack[i][j].from_hub);
 
-			//     hub[hub_id]->flit_tx[port](flit[i][j].from_hub);
-			//     hub[hub_id]->req_tx[port](req[i][j].from_hub);
-			//     hub[hub_id]->ack_tx[port](ack[i][j].to_hub);
-			// }
+      //     hub[hub_id]->flit_tx[port](flit[i][j].from_hub);
+      //     hub[hub_id]->req_tx[port](req[i][j].from_hub);
+      //     hub[hub_id]->ack_tx[port](ack[i][j].to_hub);
+      // }
 
-			// Map buffer level signals (analogy with req_tx/rx port mapping)
-			t[i][j]->free_slots[DIRECTION_NORTH](free_slots[i][j].north);
-			t[i][j]->free_slots[DIRECTION_EAST](free_slots[i + 1][j].east);
-			t[i][j]->free_slots[DIRECTION_SOUTH](free_slots[i][j + 1].south);
-			t[i][j]->free_slots[DIRECTION_WEST](free_slots[i][j].west);
+      // Map buffer level signals (analogy with req_tx/rx port mapping)
+      t[i][j]->free_slots[DIRECTION_NORTH](free_slots[i][j].north);
+      t[i][j]->free_slots[DIRECTION_EAST](free_slots[i + 1][j].east);
+      t[i][j]->free_slots[DIRECTION_SOUTH](free_slots[i][j + 1].south);
+      t[i][j]->free_slots[DIRECTION_WEST](free_slots[i][j].west);
 
-			t[i][j]->free_slots_neighbor[DIRECTION_NORTH](free_slots[i][j].south);
-			t[i][j]->free_slots_neighbor[DIRECTION_EAST](free_slots[i + 1][j].west);
-			t[i][j]->free_slots_neighbor[DIRECTION_SOUTH](free_slots[i][j + 1].north);
-			t[i][j]->free_slots_neighbor[DIRECTION_WEST](free_slots[i][j].east);
+      t[i][j]->free_slots_neighbor[DIRECTION_NORTH](free_slots[i][j].south);
+      t[i][j]->free_slots_neighbor[DIRECTION_EAST](free_slots[i + 1][j].west);
+      t[i][j]->free_slots_neighbor[DIRECTION_SOUTH](free_slots[i][j + 1].north);
+      t[i][j]->free_slots_neighbor[DIRECTION_WEST](free_slots[i][j].east);
 
-			// NoP
-			t[i][j]->NoP_data_out[DIRECTION_NORTH](nop_data[i][j].north);
-			t[i][j]->NoP_data_out[DIRECTION_EAST](nop_data[i + 1][j].east);
-			t[i][j]->NoP_data_out[DIRECTION_SOUTH](nop_data[i][j + 1].south);
-			t[i][j]->NoP_data_out[DIRECTION_WEST](nop_data[i][j].west);
+      // NoP
+      t[i][j]->NoP_data_out[DIRECTION_NORTH](nop_data[i][j].north);
+      t[i][j]->NoP_data_out[DIRECTION_EAST](nop_data[i + 1][j].east);
+      t[i][j]->NoP_data_out[DIRECTION_SOUTH](nop_data[i][j + 1].south);
+      t[i][j]->NoP_data_out[DIRECTION_WEST](nop_data[i][j].west);
 
-			t[i][j]->NoP_data_in[DIRECTION_NORTH](nop_data[i][j].south);
-			t[i][j]->NoP_data_in[DIRECTION_EAST](nop_data[i + 1][j].west);
-			t[i][j]->NoP_data_in[DIRECTION_SOUTH](nop_data[i][j + 1].north);
-			t[i][j]->NoP_data_in[DIRECTION_WEST](nop_data[i][j].east);
-		}
-	}
+      t[i][j]->NoP_data_in[DIRECTION_NORTH](nop_data[i][j].south);
+      t[i][j]->NoP_data_in[DIRECTION_EAST](nop_data[i + 1][j].west);
+      t[i][j]->NoP_data_in[DIRECTION_SOUTH](nop_data[i][j + 1].north);
+      t[i][j]->NoP_data_in[DIRECTION_WEST](nop_data[i][j].east);
+    }
+  }
 
-	// dummy NoP_data structure
-	NoP_data tmp_NoP;
+  // dummy NoP_data structure
+  NoP_data tmp_NoP;
 
-	tmp_NoP.sender_id = NOT_VALID;
+  tmp_NoP.sender_id = NOT_VALID;
 
-	for (int i = 0; i < DIRECTIONS; i++)
-	{
-		tmp_NoP.channel_status_neighbor[i].free_slots = NOT_VALID;
-		tmp_NoP.channel_status_neighbor[i].available = false;
-	}
+  for (int i = 0; i < DIRECTIONS; i++) {
+    tmp_NoP.channel_status_neighbor[i].free_slots = NOT_VALID;
+    tmp_NoP.channel_status_neighbor[i].available = false;
+  }
 
-	// Clear signals for borderline nodes
-	for (int i = 0; i <= GlobalParams::mesh_dim_x; i++)
-	{
-		req[i][0].south = 0;
-		ack[i][0].north = 0;
-		req[i][GlobalParams::mesh_dim_y].north = 0;
-		ack[i][GlobalParams::mesh_dim_y].south = 0;
+  // Clear signals for borderline nodes
+  for (int i = 0; i <= GlobalParams::mesh_dim_x; i++) {
+    req[i][0].south = 0;
+    ack[i][0].north = 0;
+    req[i][GlobalParams::mesh_dim_y].north = 0;
+    ack[i][GlobalParams::mesh_dim_y].south = 0;
 
-		free_slots[i][0].south.write(NOT_VALID);
-		free_slots[i][GlobalParams::mesh_dim_y].north.write(NOT_VALID);
+    free_slots[i][0].south.write(NOT_VALID);
+    free_slots[i][GlobalParams::mesh_dim_y].north.write(NOT_VALID);
 
-		nop_data[i][0].south.write(tmp_NoP);
-		nop_data[i][GlobalParams::mesh_dim_y].north.write(tmp_NoP);
-	}
+    nop_data[i][0].south.write(tmp_NoP);
+    nop_data[i][GlobalParams::mesh_dim_y].north.write(tmp_NoP);
+  }
 
-	for (int j = 0; j <= GlobalParams::mesh_dim_y; j++)
-	{
-		req[0][j].east = 0;
-		ack[0][j].west = 0;
-		req[GlobalParams::mesh_dim_x][j].west = 0;
-		ack[GlobalParams::mesh_dim_x][j].east = 0;
+  for (int j = 0; j <= GlobalParams::mesh_dim_y; j++) {
+    req[0][j].east = 0;
+    ack[0][j].west = 0;
+    req[GlobalParams::mesh_dim_x][j].west = 0;
+    ack[GlobalParams::mesh_dim_x][j].east = 0;
 
-		free_slots[0][j].east.write(NOT_VALID);
-		free_slots[GlobalParams::mesh_dim_x][j].west.write(NOT_VALID);
+    free_slots[0][j].east.write(NOT_VALID);
+    free_slots[GlobalParams::mesh_dim_x][j].west.write(NOT_VALID);
 
-		nop_data[0][j].east.write(tmp_NoP);
-		nop_data[GlobalParams::mesh_dim_x][j].west.write(tmp_NoP);
-	}
+    nop_data[0][j].east.write(tmp_NoP);
+    nop_data[GlobalParams::mesh_dim_x][j].west.write(tmp_NoP);
+  }
 
-	// invalidate reservation table entries for non-exhistent channels
-	for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
-	{
-		t[i][0]->r->reservation_table.invalidate(DIRECTION_NORTH);
-		t[i][GlobalParams::mesh_dim_y - 1]->r->reservation_table.invalidate(DIRECTION_SOUTH);
-	}
-	for (int j = 0; j < GlobalParams::mesh_dim_y; j++)
-	{
-		t[0][j]->r->reservation_table.invalidate(DIRECTION_WEST);
-		t[GlobalParams::mesh_dim_x - 1][j]->r->reservation_table.invalidate(DIRECTION_EAST);
-	}
+  // invalidate reservation table entries for non-exhistent channels
+  for (int i = 0; i < GlobalParams::mesh_dim_x; i++) {
+    t[i][0]->r->reservation_table.invalidate(DIRECTION_NORTH);
+    t[i][GlobalParams::mesh_dim_y - 1]->r->reservation_table.invalidate(
+        DIRECTION_SOUTH);
+  }
+  for (int j = 0; j < GlobalParams::mesh_dim_y; j++) {
+    t[0][j]->r->reservation_table.invalidate(DIRECTION_WEST);
+    t[GlobalParams::mesh_dim_x - 1][j]->r->reservation_table.invalidate(
+        DIRECTION_EAST);
+  }
 }
 
-Tile *NoC::searchNode(const int id) const
-{
-	for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
-		for (int j = 0; j < GlobalParams::mesh_dim_y; j++)
-			if (t[i][j]->r->local_id == id)
-				return t[i][j];
+Tile *NoC::searchNode(const int id) const {
+  for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
+    for (int j = 0; j < GlobalParams::mesh_dim_y; j++)
+      if (t[i][j]->r->local_id == id)
+        return t[i][j];
 
-	return NULL;
+  return NULL;
 }
 
-Tile_Hybrid *NoC::searchNode_Hybrid(const int id) const
-{
-	for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
-		for (int j = 0; j < GlobalParams::mesh_dim_y; j++)
-			if (t_Hybrid[i][j]->r->local_id == id)
-				return t_Hybrid[i][j];
+Tile_Hybrid *NoC::searchNode_Hybrid(const int id) const {
+  for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
+    for (int j = 0; j < GlobalParams::mesh_dim_y; j++)
+      if (t_Hybrid[i][j]->r->local_id == id)
+        return t_Hybrid[i][j];
 
-	return NULL;
+  return NULL;
 }
 
-//! -------------------------------------------------- WRONoC --------------------------------------------------
-Tile_ONoC *NoC::searchNode_ONoC(const int id) const
-{
-	for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
-		for (int j = 0; j < GlobalParams::mesh_dim_y; j++)
-			if (t_ONoC[i][j]->r->local_id == id)
-			{
-				cout << "In searchNode_ONoC, local_id == id" << endl;
-				return t_ONoC[i][j];
-			}
-			else
-			{
-				cout << "In searchNode_ONoC, local_id != id" << endl;
-			}
+//! -------------------------------------------------- WRONoC
+//! --------------------------------------------------
+Tile_ONoC *NoC::searchNode_ONoC(const int id) const {
+  for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
+    for (int j = 0; j < GlobalParams::mesh_dim_y; j++)
+      if (t_ONoC[i][j]->r->local_id == id) {
+        cout << "In searchNode_ONoC, local_id == id" << endl;
+        return t_ONoC[i][j];
+      } else {
+        cout << "In searchNode_ONoC, local_id != id" << endl;
+      }
 
-	return NULL;
+  return NULL;
 }
 
-void NoC::buildOpticalNoC()
-{
-	cout << "In buildOpticalNoC()..." << endl;
+void NoC::buildOpticalNoC() {
+  cout << "In buildOpticalNoC()..." << endl;
 
-	//* Initialize signals
-	int dimX = GlobalParams::mesh_dim_x + 1;
-	int dimY = GlobalParams::mesh_dim_y + 1;
+  //* Initialize signals
+  int dimX = GlobalParams::mesh_dim_x + 1;
+  int dimY = GlobalParams::mesh_dim_y + 1;
 
-	// Check for routing table availability
-	if (GlobalParams::routing_algorithm == ROUTING_TABLE_BASED)
-		assert(grtable.load(GlobalParams::routing_table_filename.c_str()));
+  // Check for routing table availability
+  if (GlobalParams::routing_algorithm == ROUTING_TABLE_BASED)
+    assert(grtable.load(GlobalParams::routing_table_filename.c_str()));
 
-	// Check for traffic table availability
-	if (GlobalParams::traffic_distribution == TRAFFIC_TABLE_BASED)
-		assert(gttable.load(GlobalParams::traffic_table_filename.c_str()));
+  // Check for traffic table availability
+  if (GlobalParams::traffic_distribution == TRAFFIC_TABLE_BASED)
+    assert(gttable.load(GlobalParams::traffic_table_filename.c_str()));
 
-	req_opt = new sc_signal_OPTICAL<bool> *[GlobalParams::mesh_dim_x];
-	ack_opt = new sc_signal_OPTICAL<ACK> *[GlobalParams::mesh_dim_x];
-	flit_opt = new sc_signal_OPTICAL<Flit> *[GlobalParams::mesh_dim_x];
-	bits_opt = new sc_signal_OPTICAL<sc_logic> *[GlobalParams::mesh_dim_x];
+  req_opt = new sc_signal_OPTICAL<bool> *[GlobalParams::mesh_dim_x];
+  ack_opt = new sc_signal_OPTICAL<ACK> *[GlobalParams::mesh_dim_x];
+  flit_opt = new sc_signal_OPTICAL<Flit> *[GlobalParams::mesh_dim_x];
+  bits_opt = new sc_signal_OPTICAL<sc_logic> *[GlobalParams::mesh_dim_x];
 
-	for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
-	{
-		req_opt[i] = new sc_signal_OPTICAL<bool>[GlobalParams::mesh_dim_y];
-		ack_opt[i] = new sc_signal_OPTICAL<ACK>[GlobalParams::mesh_dim_y];
-		flit_opt[i] = new sc_signal_OPTICAL<Flit>[GlobalParams::mesh_dim_y];
-		bits_opt[i] = new sc_signal_OPTICAL<sc_logic>[GlobalParams::mesh_dim_y];
-	}
-	for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
-	{
-		for (int j = 0; j < GlobalParams::mesh_dim_y; j++)
-		{
-			req_opt[i][j].from_central_router = new sc_signal<bool>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
-			ack_opt[i][j].from_central_router = new sc_signal<ACK>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
-			flit_opt[i][j].from_central_router = new sc_signal<Flit>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
-			bits_opt[i][j].from_central_router = new sc_signal<sc_logic>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
+  for (int i = 0; i < GlobalParams::mesh_dim_x; i++) {
+    req_opt[i] = new sc_signal_OPTICAL<bool>[GlobalParams::mesh_dim_y];
+    ack_opt[i] = new sc_signal_OPTICAL<ACK>[GlobalParams::mesh_dim_y];
+    flit_opt[i] = new sc_signal_OPTICAL<Flit>[GlobalParams::mesh_dim_y];
+    bits_opt[i] = new sc_signal_OPTICAL<sc_logic>[GlobalParams::mesh_dim_y];
+  }
+  for (int i = 0; i < GlobalParams::mesh_dim_x; i++) {
+    for (int j = 0; j < GlobalParams::mesh_dim_y; j++) {
+      req_opt[i][j].from_central_router =
+          new sc_signal<bool>[GlobalParams::mesh_dim_x *
+                              GlobalParams::mesh_dim_y];
+      ack_opt[i][j].from_central_router =
+          new sc_signal<ACK>[GlobalParams::mesh_dim_x *
+                             GlobalParams::mesh_dim_y];
+      flit_opt[i][j].from_central_router =
+          new sc_signal<Flit>[GlobalParams::mesh_dim_x *
+                              GlobalParams::mesh_dim_y];
+      bits_opt[i][j].from_central_router =
+          new sc_signal<sc_logic>[GlobalParams::mesh_dim_x *
+                                  GlobalParams::mesh_dim_y];
 
-			req_opt[i][j].to_central_router = new sc_signal<bool>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
-			ack_opt[i][j].to_central_router = new sc_signal<ACK>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
-			flit_opt[i][j].to_central_router = new sc_signal<Flit>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
-			bits_opt[i][j].to_central_router = new sc_signal<sc_logic>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
-		}
-	}
-	//* Create a Central Tile (The Central Router)
-	t_central = new Tile_Central("Central_Router", -1); // tile_name, tile_id
-	t_central->clock(clock);
-	t_central->reset(reset);
-	cout << "t_central and sc_signal_OPTICAL have been initialized." << endl;
-	//* Create the mesh as a matrix of normal tiles
-	t_ONoC = new Tile_ONoC **[GlobalParams::mesh_dim_x];
-	for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
-	{
-		t_ONoC[i] = new Tile_ONoC *[GlobalParams::mesh_dim_y];
-	}
-	for (int j = 0; j < GlobalParams::mesh_dim_y; j++)
-	{
-		for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
-		{
-			// Create the single Tile with a proper name
-			char tile_name[20];
-			Coord tile_coord;
-			tile_coord.x = i;
-			tile_coord.y = j;
-			int tile_id = coord2Id(tile_coord);
-			sprintf(tile_name, "Tile[%02d][%02d]_(#%d)", i, j, tile_id);
-			t_ONoC[i][j] = new Tile_ONoC(tile_name, tile_id);
+      req_opt[i][j].to_central_router =
+          new sc_signal<bool>[GlobalParams::mesh_dim_x *
+                              GlobalParams::mesh_dim_y];
+      ack_opt[i][j].to_central_router =
+          new sc_signal<ACK>[GlobalParams::mesh_dim_x *
+                             GlobalParams::mesh_dim_y];
+      flit_opt[i][j].to_central_router =
+          new sc_signal<Flit>[GlobalParams::mesh_dim_x *
+                              GlobalParams::mesh_dim_y];
+      bits_opt[i][j].to_central_router =
+          new sc_signal<sc_logic>[GlobalParams::mesh_dim_x *
+                                  GlobalParams::mesh_dim_y];
+    }
+  }
+  //* Create a Central Tile (The Central Router)
+  t_central = new Tile_Central("Central_Router", -1); // tile_name, tile_id
+  t_central->clock(clock);
+  t_central->reset(reset);
+  cout << "t_central and sc_signal_OPTICAL have been initialized." << endl;
+  //* Create the mesh as a matrix of normal tiles
+  t_ONoC = new Tile_ONoC **[GlobalParams::mesh_dim_x];
+  for (int i = 0; i < GlobalParams::mesh_dim_x; i++) {
+    t_ONoC[i] = new Tile_ONoC *[GlobalParams::mesh_dim_y];
+  }
+  for (int j = 0; j < GlobalParams::mesh_dim_y; j++) {
+    for (int i = 0; i < GlobalParams::mesh_dim_x; i++) {
+      // Create the single Tile with a proper name
+      char tile_name[20];
+      Coord tile_coord;
+      tile_coord.x = i;
+      tile_coord.y = j;
+      int tile_id = coord2Id(tile_coord);
+      sprintf(tile_name, "Tile[%02d][%02d]_(#%d)", i, j, tile_id);
+      t_ONoC[i][j] = new Tile_ONoC(tile_name, tile_id);
 
-			cout << "t_ONoC " << tile_name << "(" << tile_id << ") has been initialized." << endl;
+      cout << "t_ONoC " << tile_name << "(" << tile_id
+           << ") has been initialized." << endl;
 
-			// Tell to the router its coordinates
-			t_ONoC[i][j]->r->configure(j * GlobalParams::mesh_dim_x + i,
-									   GlobalParams::stats_warm_up_time,
-									   GlobalParams::buffer_depth,
-									   grtable);
-			t_ONoC[i][j]->r->power.configureRouter(GlobalParams::flit_size,
-												   GlobalParams::buffer_depth,
-												   GlobalParams::flit_size,
-												   string(GlobalParams::routing_algorithm),
-												   "default");
+      // Tell to the router its coordinates
+      t_ONoC[i][j]->r->configure(j * GlobalParams::mesh_dim_x + i,
+                                 GlobalParams::stats_warm_up_time,
+                                 GlobalParams::buffer_depth, grtable);
+      t_ONoC[i][j]->r->power.configureRouter(
+          GlobalParams::flit_size, GlobalParams::buffer_depth,
+          GlobalParams::flit_size, string(GlobalParams::routing_algorithm),
+          "default");
 
-			cout << "After setting t_ONoC[i][j]->r->power.configureRouter." << endl;
-			// Tell to the PE its coordinates
-			t_ONoC[i][j]->pe->local_id = j * GlobalParams::mesh_dim_x + i;
-			cout << "After setting t_ONoC[i][j]->pe->local_id = " << j * GlobalParams::mesh_dim_x + i << endl;
-			t_ONoC[i][j]->pe->traffic_table = &gttable; // Needed to choose destination
-			cout << "After setting t_ONoC[i][j]->pe->traffic_table" << endl;
-			t_ONoC[i][j]->pe->never_transmit = (gttable.occurrencesAsSource(t_ONoC[i][j]->pe->local_id) == 0);
-			cout << "After setting t_ONoC[i][j]->pe->never_transmit" << endl;
-			// Map clock and reset
-			t_ONoC[i][j]->clock(clock);
-			t_ONoC[i][j]->clock_optical(clock_optical);
-			t_ONoC[i][j]->reset(reset);
+      cout << "After setting t_ONoC[i][j]->r->power.configureRouter." << endl;
+      // Tell to the PE its coordinates
+      t_ONoC[i][j]->pe->local_id = j * GlobalParams::mesh_dim_x + i;
+      cout << "After setting t_ONoC[i][j]->pe->local_id = "
+           << j * GlobalParams::mesh_dim_x + i << endl;
+      t_ONoC[i][j]->pe->traffic_table =
+          &gttable; // Needed to choose destination
+      cout << "After setting t_ONoC[i][j]->pe->traffic_table" << endl;
+      t_ONoC[i][j]->pe->never_transmit =
+          (gttable.occurrencesAsSource(t_ONoC[i][j]->pe->local_id) == 0);
+      cout << "After setting t_ONoC[i][j]->pe->never_transmit" << endl;
+      // Map clock and reset
+      t_ONoC[i][j]->clock(clock);
+      t_ONoC[i][j]->clock_optical(clock_optical);
+      t_ONoC[i][j]->reset(reset);
 
-			// Map Central_tile -> Router_Rx signals
-			for (int k = 0; k < GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y; k++)
-			{
-				t_ONoC[i][j]->flit_rx_from_central_tile[k](flit_opt[i][j].from_central_router[k]);
-				t_ONoC[i][j]->req_rx_from_central_tile[k](req_opt[i][j].from_central_router[k]);
-				t_ONoC[i][j]->ack_tx_from_central_tile[k](ack_opt[i][j].from_central_router[k]);
-				t_ONoC[i][j]->bits_in_from_central_tile[k](bits_opt[i][j].from_central_router[k]);
+      // Map Central_tile -> Router_Rx signals
+      for (int k = 0; k < GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y;
+           k++) {
+        t_ONoC[i][j]->flit_rx_from_central_tile[k](
+            flit_opt[i][j].from_central_router[k]);
+        t_ONoC[i][j]->req_rx_from_central_tile[k](
+            req_opt[i][j].from_central_router[k]);
+        t_ONoC[i][j]->ack_tx_from_central_tile[k](
+            ack_opt[i][j].from_central_router[k]);
+        t_ONoC[i][j]->bits_in_from_central_tile[k](
+            bits_opt[i][j].from_central_router[k]);
 
-				t_central->flit_tx[j * GlobalParams::mesh_dim_x + i][k](flit_opt[i][j].from_central_router[k]);
-				t_central->req_tx[j * GlobalParams::mesh_dim_x + i][k](req_opt[i][j].from_central_router[k]);
-				t_central->ack_tx[j * GlobalParams::mesh_dim_x + i][k](ack_opt[i][j].from_central_router[k]);
-				t_central->bits_out[j * GlobalParams::mesh_dim_x + i][k](bits_opt[i][j].from_central_router[k]);
-			}
-			// t_ONoC[i][j]->ack_rx_to_central_tile (ack_opt[i][j].to_central_router);
+        t_central->flit_tx[j * GlobalParams::mesh_dim_x + i][k](
+            flit_opt[i][j].from_central_router[k]);
+        t_central->req_tx[j * GlobalParams::mesh_dim_x + i][k](
+            req_opt[i][j].from_central_router[k]);
+        t_central->ack_tx[j * GlobalParams::mesh_dim_x + i][k](
+            ack_opt[i][j].from_central_router[k]);
+        t_central->bits_out[j * GlobalParams::mesh_dim_x + i][k](
+            bits_opt[i][j].from_central_router[k]);
+      }
+      // t_ONoC[i][j]->ack_rx_to_central_tile (ack_opt[i][j].to_central_router);
 
-			// Map Tx signals
-			for (int k = 0; k < GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y; k++)
-			{
-				t_ONoC[i][j]->flit_tx_to_central_tile[k](flit_opt[i][j].to_central_router[k]);
-				t_ONoC[i][j]->req_tx_to_central_tile[k](req_opt[i][j].to_central_router[k]);
-				t_ONoC[i][j]->ack_rx_to_central_tile[k](ack_opt[i][j].to_central_router[k]);
-				t_ONoC[i][j]->bits_out_to_central_tile[k](bits_opt[i][j].to_central_router[k]);
-				// Map Central Router signals
-				t_central->flit_rx[j * GlobalParams::mesh_dim_x + i][k](flit_opt[i][j].to_central_router[k]);
-				t_central->req_rx[j * GlobalParams::mesh_dim_x + i][k](req_opt[i][j].to_central_router[k]);
-				t_central->ack_rx[j * GlobalParams::mesh_dim_x + i][k](ack_opt[i][j].to_central_router[k]);
-				t_central->bits_in[j * GlobalParams::mesh_dim_x + i][k](bits_opt[i][j].to_central_router[k]);
-			}
-			// t_central->ack_rx[j*GlobalParams::mesh_dim_x+i] (ack_opt[i][j].from_central_router);
+      // Map Tx signals
+      for (int k = 0; k < GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y;
+           k++) {
+        t_ONoC[i][j]->flit_tx_to_central_tile[k](
+            flit_opt[i][j].to_central_router[k]);
+        t_ONoC[i][j]->req_tx_to_central_tile[k](
+            req_opt[i][j].to_central_router[k]);
+        t_ONoC[i][j]->ack_rx_to_central_tile[k](
+            ack_opt[i][j].to_central_router[k]);
+        t_ONoC[i][j]->bits_out_to_central_tile[k](
+            bits_opt[i][j].to_central_router[k]);
+        // Map Central Router signals
+        t_central->flit_rx[j * GlobalParams::mesh_dim_x + i][k](
+            flit_opt[i][j].to_central_router[k]);
+        t_central->req_rx[j * GlobalParams::mesh_dim_x + i][k](
+            req_opt[i][j].to_central_router[k]);
+        t_central->ack_rx[j * GlobalParams::mesh_dim_x + i][k](
+            ack_opt[i][j].to_central_router[k]);
+        t_central->bits_in[j * GlobalParams::mesh_dim_x + i][k](
+            bits_opt[i][j].to_central_router[k]);
+      }
+      // t_central->ack_rx[j*GlobalParams::mesh_dim_x+i]
+      // (ack_opt[i][j].from_central_router);
 
-			// t_central->ack_tx[j*GlobalParams::mesh_dim_x+i] (ack_opt[i][j].to_central_router);
+      // t_central->ack_tx[j*GlobalParams::mesh_dim_x+i]
+      // (ack_opt[i][j].to_central_router);
 
-			cout << tile_name << " signals are all connected." << endl;
-		}
-	}
+      cout << tile_name << " signals are all connected." << endl;
+    }
+  }
 }
 
-void NoC::buildHybridNoC()
-{
+void NoC::buildHybridNoC() {
 
-	// HYBRID part
-	cout << "In buildHybridNoC()..." << endl;
-	/*
-	 token_ring = new TokenRing("tokenring");
-	token_ring->clock(clock);
-	token_ring->reset(reset);
+  // HYBRID part
+  cout << "In buildHybridNoC()..." << endl;
+  /*
+   token_ring = new TokenRing("tokenring");
+  token_ring->clock(clock);
+  token_ring->reset(reset);
 
-	char channel_name[16];
-	for (map<int, ChannelConfig>::iterator it = GlobalParams::channel_configuration.begin();
-			it != GlobalParams::channel_configuration.end();
-			++it)
-	{
-		int channel_id = it->first;
-		sprintf(channel_name, "Channel_%d", channel_id);
-		channel[channel_id] = new Channel(channel_name, channel_id);
-	}
+  char channel_name[16];
+  for (map<int, ChannelConfig>::iterator it =
+  GlobalParams::channel_configuration.begin(); it !=
+  GlobalParams::channel_configuration.end();
+                  ++it)
+  {
+          int channel_id = it->first;
+          sprintf(channel_name, "Channel_%d", channel_id);
+          channel[channel_id] = new Channel(channel_name, channel_id);
+  }
 
-	char hub_name[16];
-	for (map<int, HubConfig>::iterator it = GlobalParams::hub_configuration.begin();
-			it != GlobalParams::hub_configuration.end();
-			++it)
-	{
-		int hub_id = it->first;
-		HubConfig hub_config = it->second;
+  char hub_name[16];
+  for (map<int, HubConfig>::iterator it =
+  GlobalParams::hub_configuration.begin(); it !=
+  GlobalParams::hub_configuration.end();
+                  ++it)
+  {
+          int hub_id = it->first;
+          HubConfig hub_config = it->second;
 
-		sprintf(hub_name, "Hub_%d", hub_id);
-		hub[hub_id] = new Hub(hub_name, hub_id,token_ring);
-		hub[hub_id]->clock(clock);
-		hub[hub_id]->reset(reset);
-
-
-		// Determine, from configuration file, which Hub is connected to which Tile
-		for(vector<int>::iterator iit = hub_config.attachedNodes.begin();
-				iit != hub_config.attachedNodes.end();
-				++iit)
-		{
-			GlobalParams::hub_for_tile[*iit] = hub_id;
-		}
+          sprintf(hub_name, "Hub_%d", hub_id);
+          hub[hub_id] = new Hub(hub_name, hub_id,token_ring);
+          hub[hub_id]->clock(clock);
+          hub[hub_id]->reset(reset);
 
 
-		// Determine, from configuration file, which Hub is connected to which Channel
-		for(vector<int>::iterator iit = hub_config.txChannels.begin();
-				iit != hub_config.txChannels.end();
-				++iit)
-		{
-			int channel_id = *iit;
-			//LOG << "Binding " << hub[hub_id]->name() << " to txChannel " << channel_id << endl;
-			hub[hub_id]->init[channel_id]->socket.bind(channel[channel_id]->targ_socket);
-			//LOG << "Binding " << hub[hub_id]->name() << " to txChannel " << channel_id << endl;
-			hub[hub_id]->setFlitTransmissionCycles(channel[channel_id]->getFlitTransmissionCycles(),channel_id);
-		}
-
-		for(vector<int>::iterator iit = hub_config.rxChannels.begin();
-				iit != hub_config.rxChannels.end();
-				++iit)
-		{
-			int channel_id = *iit;
-			//LOG << "Binding " << hub[hub_id]->name() << " to rxChannel " << channel_id << endl;
-			channel[channel_id]->init_socket.bind(hub[hub_id]->target[channel_id]->socket);
-			channel[channel_id]->addHub(hub[hub_id]);
-		}
-
-	// TODO FIX
-	// Hub Power model does not currently support different data rates for single hub
-	// If multiple channels are connected to an Hub, the data rate
-	// of the first channel will be used as default
-
-	int no_channels = hub_config.txChannels.size();
-
-	if (no_channels > 1)
-	{
-		cerr << " WARNING: Power model currently not supporting multi-channel per hub, using default_tx_energy" << endl;
-	}
-
-	int data_rate_gbs;
-
-	if (no_channels > 0) {
-		data_rate_gbs = GlobalParams::channel_configuration[hub_config.txChannels[0]].dataRate;
-	}
-	else
-		data_rate_gbs = NOT_VALID;
+          // Determine, from configuration file, which Hub is connected to which
+  Tile for(vector<int>::iterator iit = hub_config.attachedNodes.begin(); iit !=
+  hub_config.attachedNodes.end();
+                          ++iit)
+          {
+                  GlobalParams::hub_for_tile[*iit] = hub_id;
+          }
 
 
-	// TODO: update power model (configureHub to support different
-	// tx/tx buffer depth
-	assert(GlobalParams::hub_configuration[hub_id].rxBufferSize==GlobalParams::hub_configuration[hub_id].txBufferSize);
+          // Determine, from configuration file, which Hub is connected to which
+  Channel for(vector<int>::iterator iit = hub_config.txChannels.begin(); iit !=
+  hub_config.txChannels.end();
+                          ++iit)
+          {
+                  int channel_id = *iit;
+                  //LOG << "Binding " << hub[hub_id]->name() << " to txChannel "
+  << channel_id << endl;
+                  hub[hub_id]->init[channel_id]->socket.bind(channel[channel_id]->targ_socket);
+                  //LOG << "Binding " << hub[hub_id]->name() << " to txChannel "
+  << channel_id << endl;
+                  hub[hub_id]->setFlitTransmissionCycles(channel[channel_id]->getFlitTransmissionCycles(),channel_id);
+          }
 
-	hub[hub_id]->power.configureHub(GlobalParams::flit_size,
-								GlobalParams::hub_configuration[hub_id].toTileBufferSize,
-								GlobalParams::hub_configuration[hub_id].fromTileBufferSize,
-					GlobalParams::flit_size,
-					GlobalParams::hub_configuration[hub_id].rxBufferSize,
-					GlobalParams::flit_size,
-					data_rate_gbs);
+          for(vector<int>::iterator iit = hub_config.rxChannels.begin();
+                          iit != hub_config.rxChannels.end();
+                          ++iit)
+          {
+                  int channel_id = *iit;
+                  //LOG << "Binding " << hub[hub_id]->name() << " to rxChannel "
+  << channel_id << endl;
+                  channel[channel_id]->init_socket.bind(hub[hub_id]->target[channel_id]->socket);
+                  channel[channel_id]->addHub(hub[hub_id]);
+          }
 
-	}
+  // TODO FIX
+  // Hub Power model does not currently support different data rates for single
+  hub
+  // If multiple channels are connected to an Hub, the data rate
+  // of the first channel will be used as default
+
+  int no_channels = hub_config.txChannels.size();
+
+  if (no_channels > 1)
+  {
+          cerr << " WARNING: Power model currently not supporting multi-channel
+  per hub, using default_tx_energy" << endl;
+  }
+
+  int data_rate_gbs;
+
+  if (no_channels > 0) {
+          data_rate_gbs =
+  GlobalParams::channel_configuration[hub_config.txChannels[0]].dataRate;
+  }
+  else
+          data_rate_gbs = NOT_VALID;
+
+
+  // TODO: update power model (configureHub to support different
+  // tx/tx buffer depth
+  assert(GlobalParams::hub_configuration[hub_id].rxBufferSize==GlobalParams::hub_configuration[hub_id].txBufferSize);
+
+  hub[hub_id]->power.configureHub(GlobalParams::flit_size,
+                                                          GlobalParams::hub_configuration[hub_id].toTileBufferSize,
+                                                          GlobalParams::hub_configuration[hub_id].fromTileBufferSize,
+                                  GlobalParams::flit_size,
+                                  GlobalParams::hub_configuration[hub_id].rxBufferSize,
+                                  GlobalParams::flit_size,
+                                  data_rate_gbs);
+
+  }
 
 
 
 
 
-	//// Var to track Hub connected ports
-	int * hub_connected_ports = (int *) calloc(GlobalParams::hub_configuration.size(), sizeof(int));
+  //// Var to track Hub connected ports
+  int * hub_connected_ports = (int *)
+  calloc(GlobalParams::hub_configuration.size(), sizeof(int));
 */
 
-	// Check for routing table availability
-	// Check for routing table availability
-	if (GlobalParams::routing_algorithm == ROUTING_TABLE_BASED)
-		assert(grtable.load(GlobalParams::routing_table_filename.c_str()));
+  // Check for routing table availability
+  // Check for routing table availability
+  if (GlobalParams::routing_algorithm == ROUTING_TABLE_BASED)
+    assert(grtable.load(GlobalParams::routing_table_filename.c_str()));
 
-	// Check for traffic table availability
-	if (GlobalParams::traffic_distribution == TRAFFIC_TABLE_BASED)
-		assert(gttable.load(GlobalParams::traffic_table_filename.c_str()));
-	// Initialize signals
-	int dimX = GlobalParams::mesh_dim_x + 1;
-	int dimY = GlobalParams::mesh_dim_y + 1;
+  // Check for traffic table availability
+  if (GlobalParams::traffic_distribution == TRAFFIC_TABLE_BASED)
+    assert(gttable.load(GlobalParams::traffic_table_filename.c_str()));
+  // Initialize signals
+  int dimX = GlobalParams::mesh_dim_x + 1;
+  int dimY = GlobalParams::mesh_dim_y + 1;
 
-	// onoc
-	req_opt = new sc_signal_OPTICAL<bool> *[GlobalParams::mesh_dim_x];
-	ack_opt = new sc_signal_OPTICAL<ACK> *[GlobalParams::mesh_dim_x];
-	flit_opt = new sc_signal_OPTICAL<Flit> *[GlobalParams::mesh_dim_x];
-	bits_opt = new sc_signal_OPTICAL<sc_logic> *[GlobalParams::mesh_dim_x];
+  // onoc
+  req_opt = new sc_signal_OPTICAL<bool> *[GlobalParams::mesh_dim_x];
+  ack_opt = new sc_signal_OPTICAL<ACK> *[GlobalParams::mesh_dim_x];
+  flit_opt = new sc_signal_OPTICAL<Flit> *[GlobalParams::mesh_dim_x];
+  bits_opt = new sc_signal_OPTICAL<sc_logic> *[GlobalParams::mesh_dim_x];
 
-	for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
-	{
-		req_opt[i] = new sc_signal_OPTICAL<bool>[GlobalParams::mesh_dim_y];
-		ack_opt[i] = new sc_signal_OPTICAL<ACK>[GlobalParams::mesh_dim_y];
-		flit_opt[i] = new sc_signal_OPTICAL<Flit>[GlobalParams::mesh_dim_y];
-		bits_opt[i] = new sc_signal_OPTICAL<sc_logic>[GlobalParams::mesh_dim_y];
-	}
-	for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
-	{
-		for (int j = 0; j < GlobalParams::mesh_dim_y; j++)
-		{
-			req_opt[i][j].from_central_router = new sc_signal<bool>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
-			ack_opt[i][j].from_central_router = new sc_signal<ACK>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
-			flit_opt[i][j].from_central_router = new sc_signal<Flit>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
-			bits_opt[i][j].from_central_router = new sc_signal<sc_logic>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
+  for (int i = 0; i < GlobalParams::mesh_dim_x; i++) {
+    req_opt[i] = new sc_signal_OPTICAL<bool>[GlobalParams::mesh_dim_y];
+    ack_opt[i] = new sc_signal_OPTICAL<ACK>[GlobalParams::mesh_dim_y];
+    flit_opt[i] = new sc_signal_OPTICAL<Flit>[GlobalParams::mesh_dim_y];
+    bits_opt[i] = new sc_signal_OPTICAL<sc_logic>[GlobalParams::mesh_dim_y];
+  }
+  for (int i = 0; i < GlobalParams::mesh_dim_x; i++) {
+    for (int j = 0; j < GlobalParams::mesh_dim_y; j++) {
+      req_opt[i][j].from_central_router =
+          new sc_signal<bool>[GlobalParams::mesh_dim_x *
+                              GlobalParams::mesh_dim_y];
+      ack_opt[i][j].from_central_router =
+          new sc_signal<ACK>[GlobalParams::mesh_dim_x *
+                             GlobalParams::mesh_dim_y];
+      flit_opt[i][j].from_central_router =
+          new sc_signal<Flit>[GlobalParams::mesh_dim_x *
+                              GlobalParams::mesh_dim_y];
+      bits_opt[i][j].from_central_router =
+          new sc_signal<sc_logic>[GlobalParams::mesh_dim_x *
+                                  GlobalParams::mesh_dim_y];
 
-			req_opt[i][j].to_central_router = new sc_signal<bool>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
-			ack_opt[i][j].to_central_router = new sc_signal<ACK>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
-			flit_opt[i][j].to_central_router = new sc_signal<Flit>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
-			bits_opt[i][j].to_central_router = new sc_signal<sc_logic>[GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y];
-		}
-	}
-	//* Create a Central Tile (The Central Router)
-	t_central = new Tile_Central("Central_Router", -1); // tile_name, tile_id
-	t_central->clock(clock);
-	t_central->reset(reset);
-	cout << "t_central and sc_signal_OPTICAL have been initialized." << endl;
+      req_opt[i][j].to_central_router =
+          new sc_signal<bool>[GlobalParams::mesh_dim_x *
+                              GlobalParams::mesh_dim_y];
+      ack_opt[i][j].to_central_router =
+          new sc_signal<ACK>[GlobalParams::mesh_dim_x *
+                             GlobalParams::mesh_dim_y];
+      flit_opt[i][j].to_central_router =
+          new sc_signal<Flit>[GlobalParams::mesh_dim_x *
+                              GlobalParams::mesh_dim_y];
+      bits_opt[i][j].to_central_router =
+          new sc_signal<sc_logic>[GlobalParams::mesh_dim_x *
+                                  GlobalParams::mesh_dim_y];
+    }
+  }
+  //* Create a Central Tile (The Central Router)
+  t_central = new Tile_Central("Central_Router", -1); // tile_name, tile_id
+  t_central->clock(clock);
+  t_central->reset(reset);
+  cout << "t_central and sc_signal_OPTICAL have been initialized." << endl;
 
-	// onoc end
+  // onoc end
 
-	// enoc
-	req = new sc_signal_NSWEH<bool> *[dimX];
-	ack = new sc_signal_NSWEH<bool> *[dimX];
-	flit = new sc_signal_NSWEH<Flit> *[dimX];
+  // enoc
+  req = new sc_signal_NSWEH<bool> *[dimX];
+  ack = new sc_signal_NSWEH<bool> *[dimX];
+  flit = new sc_signal_NSWEH<Flit> *[dimX];
 
-	free_slots = new sc_signal_NSWE<int> *[dimX];
-	nop_data = new sc_signal_NSWE<NoP_data> *[dimX];
+  free_slots = new sc_signal_NSWE<int> *[dimX];
+  nop_data = new sc_signal_NSWE<NoP_data> *[dimX];
 
-	for (int i = 0; i < dimX; i++)
-	{
-		req[i] = new sc_signal_NSWEH<bool>[dimY];
-		ack[i] = new sc_signal_NSWEH<bool>[dimY];
-		flit[i] = new sc_signal_NSWEH<Flit>[dimY];
+  for (int i = 0; i < dimX; i++) {
+    req[i] = new sc_signal_NSWEH<bool>[dimY];
+    ack[i] = new sc_signal_NSWEH<bool>[dimY];
+    flit[i] = new sc_signal_NSWEH<Flit>[dimY];
 
-		free_slots[i] = new sc_signal_NSWE<int>[dimY];
-		nop_data[i] = new sc_signal_NSWE<NoP_data>[dimY];
-	}
-	// enoc end
-	t_Hybrid = new Tile_Hybrid **[GlobalParams::mesh_dim_x];
-	for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
-	{
-		t_Hybrid[i] = new Tile_Hybrid *[GlobalParams::mesh_dim_y];
-	}
+    free_slots[i] = new sc_signal_NSWE<int>[dimY];
+    nop_data[i] = new sc_signal_NSWE<NoP_data>[dimY];
+  }
+  // enoc end
+  t_Hybrid = new Tile_Hybrid **[GlobalParams::mesh_dim_x];
+  for (int i = 0; i < GlobalParams::mesh_dim_x; i++) {
+    t_Hybrid[i] = new Tile_Hybrid *[GlobalParams::mesh_dim_y];
+  }
 
-	// Create the mesh as a matrix of Hybrid_tiles
-	for (int j = 0; j < GlobalParams::mesh_dim_y; j++)
-	{
-		for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
-		{
-			// Create the single Tile_Hybrid with a proper name
-			char Hybrid_tile_name[40];
-			Coord Hybrid_tile_coord;
-			Hybrid_tile_coord.x = i;
-			Hybrid_tile_coord.y = j;
-			int Hybrid_tile_id = coord2Id(Hybrid_tile_coord);
-			sprintf(Hybrid_tile_name, "Tile_Hybrid[%02d][%02d]_(#%d)", i, j, Hybrid_tile_id);
-			t_Hybrid[i][j] = new Tile_Hybrid(Hybrid_tile_name, Hybrid_tile_id);
-			cout << "t_ONoC " << Hybrid_tile_name << "(" << Hybrid_tile_id << ") has been initialized." << endl;
+  // Create the mesh as a matrix of Hybrid_tiles
+  for (int j = 0; j < GlobalParams::mesh_dim_y; j++) {
+    for (int i = 0; i < GlobalParams::mesh_dim_x; i++) {
+      // Create the single Tile_Hybrid with a proper name
+      char Hybrid_tile_name[40];
+      Coord Hybrid_tile_coord;
+      Hybrid_tile_coord.x = i;
+      Hybrid_tile_coord.y = j;
+      int Hybrid_tile_id = coord2Id(Hybrid_tile_coord);
+      sprintf(Hybrid_tile_name, "Tile_Hybrid[%02d][%02d]_(#%d)", i, j,
+              Hybrid_tile_id);
+      t_Hybrid[i][j] = new Tile_Hybrid(Hybrid_tile_name, Hybrid_tile_id);
+      cout << "t_ONoC " << Hybrid_tile_name << "(" << Hybrid_tile_id
+           << ") has been initialized." << endl;
 
-			// onoc router parameters
-			// Tell to the router its coordinates
-			t_Hybrid[i][j]->r_o->configure(j * GlobalParams::mesh_dim_x + i,
-										   GlobalParams::stats_warm_up_time,
-										   GlobalParams::buffer_depth,
-										   grtable);
-			t_Hybrid[i][j]->r_o->power.configureRouter(GlobalParams::flit_size,
-													   GlobalParams::buffer_depth,
-													   GlobalParams::flit_size,
-													   string(GlobalParams::routing_algorithm),
-													   "default");
+      // onoc router parameters
+      // Tell to the router its coordinates
+      t_Hybrid[i][j]->r_o->configure(j * GlobalParams::mesh_dim_x + i,
+                                     GlobalParams::stats_warm_up_time,
+                                     GlobalParams::buffer_depth, grtable);
+      t_Hybrid[i][j]->r_o->power.configureRouter(
+          GlobalParams::flit_size, GlobalParams::buffer_depth,
+          GlobalParams::flit_size, string(GlobalParams::routing_algorithm),
+          "default");
 
-			cout << "After setting t_ONoC[i][j]->r->power.configureRouter." << endl;
+      cout << "After setting t_ONoC[i][j]->r->power.configureRouter." << endl;
 
-			// Tell to the router its coordinates
-			t_Hybrid[i][j]->r->configure(j * GlobalParams::mesh_dim_x + i,
-										 GlobalParams::stats_warm_up_time,
-										 GlobalParams::buffer_depth,
-										 grtable);
-			t_Hybrid[i][j]->r->power.configureRouter(GlobalParams::flit_size,
-													 GlobalParams::buffer_depth,
-													 GlobalParams::flit_size,
-													 string(GlobalParams::routing_algorithm),
-													 "default");
+      // Tell to the router its coordinates
+      t_Hybrid[i][j]->r->configure(j * GlobalParams::mesh_dim_x + i,
+                                   GlobalParams::stats_warm_up_time,
+                                   GlobalParams::buffer_depth, grtable);
+      t_Hybrid[i][j]->r->power.configureRouter(
+          GlobalParams::flit_size, GlobalParams::buffer_depth,
+          GlobalParams::flit_size, string(GlobalParams::routing_algorithm),
+          "default");
 
-			// Tell to the PE its coordinates
-			t_Hybrid[i][j]->pe->local_id = j * GlobalParams::mesh_dim_x + i;
-			t_Hybrid[i][j]->pe->traffic_table = &gttable; // Needed to choose destination
-			t_Hybrid[i][j]->pe->never_transmit = (gttable.occurrencesAsSource(t_Hybrid[i][j]->pe->local_id) == 0);
-			cout << "After setting t_Hybrid[i][j]->pe->local_id = " << j * GlobalParams::mesh_dim_x + i << endl;
-			// Map clock and reset
-			t_Hybrid[i][j]->clock(clock);
-			t_Hybrid[i][j]->clock_optical(clock_optical);
+      // Tell to the PE its coordinates
+      t_Hybrid[i][j]->pe->local_id = j * GlobalParams::mesh_dim_x + i;
+      t_Hybrid[i][j]->pe->traffic_table =
+          &gttable; // Needed to choose destination
+      t_Hybrid[i][j]->pe->never_transmit =
+          (gttable.occurrencesAsSource(t_Hybrid[i][j]->pe->local_id) == 0);
+      cout << "After setting t_Hybrid[i][j]->pe->local_id = "
+           << j * GlobalParams::mesh_dim_x + i << endl;
+      // Map clock and reset
+      t_Hybrid[i][j]->clock(clock);
+      t_Hybrid[i][j]->clock_optical(clock_optical);
 
-			t_Hybrid[i][j]->reset(reset);
+      t_Hybrid[i][j]->reset(reset);
 
-			// onoc part
-			//  Map Central_tile -> Router_Rx signals
-			for (int k = 0; k < GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y; k++)
-			{
-				cout << i << ", " << j << ", " << k << " \n";
-				cout << flit_opt[i][j].from_central_router[k] << " " << req_opt[i][j].from_central_router[k] << " " 
-				<< ack_opt[i][j].from_central_router[k] << " " << bits_opt[i][j].from_central_router[k] << endl;
-				t_Hybrid[i][j]->flit_rx_from_central_tile[k](flit_opt[i][j].from_central_router[k]);
-				t_Hybrid[i][j]->req_rx_from_central_tile[k](req_opt[i][j].from_central_router[k]);
-				t_Hybrid[i][j]->ack_tx_from_central_tile[k](ack_opt[i][j].from_central_router[k]);
-				t_Hybrid[i][j]->bits_in_from_central_tile[k](bits_opt[i][j].from_central_router[k]);
-				t_central->flit_tx[j * GlobalParams::mesh_dim_x + i][k](flit_opt[i][j].from_central_router[k]);
-				t_central->req_tx[j * GlobalParams::mesh_dim_x + i][k](req_opt[i][j].from_central_router[k]);
-				t_central->ack_tx[j * GlobalParams::mesh_dim_x + i][k](ack_opt[i][j].from_central_router[k]);
-				t_central->bits_out[j * GlobalParams::mesh_dim_x + i][k](bits_opt[i][j].from_central_router[k]);
-			}
-			// t_Hybrid[i][j]->ack_rx_to_central_tile (ack_opt[i][j].to_central_router);
-			// Map Tx signals
-			for (int k = 0; k < GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y; k++)
-			{
-				t_Hybrid[i][j]->flit_tx_to_central_tile[k](flit_opt[i][j].to_central_router[k]);
-				t_Hybrid[i][j]->req_tx_to_central_tile[k](req_opt[i][j].to_central_router[k]);
-				t_Hybrid[i][j]->ack_rx_to_central_tile[k](ack_opt[i][j].to_central_router[k]);
-				t_Hybrid[i][j]->bits_out_to_central_tile[k](bits_opt[i][j].to_central_router[k]);
-				// Map Central Router signals
-				t_central->flit_rx[j * GlobalParams::mesh_dim_x + i][k](flit_opt[i][j].to_central_router[k]);
-				t_central->req_rx[j * GlobalParams::mesh_dim_x + i][k](req_opt[i][j].to_central_router[k]);
-				t_central->ack_rx[j * GlobalParams::mesh_dim_x + i][k](ack_opt[i][j].to_central_router[k]);
-				t_central->bits_in[j * GlobalParams::mesh_dim_x + i][k](bits_opt[i][j].to_central_router[k]);
-			}
-			
-			// Map Rx signals
-			t_Hybrid[i][j]->req_rx[DIRECTION_NORTH](req[i][j].south);	// in
-			t_Hybrid[i][j]->flit_rx[DIRECTION_NORTH](flit[i][j].south); // in
-			t_Hybrid[i][j]->ack_rx[DIRECTION_NORTH](ack[i][j].north);	// out
+      // onoc part
+      //  Map Central_tile -> Router_Rx signals
+      for (int k = 0; k < GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y;
+           k++) {
+        cout << i << ", " << j << ", " << k << " \n";
+        cout << flit_opt[i][j].from_central_router[k] << " "
+             << req_opt[i][j].from_central_router[k] << " "
+             << ack_opt[i][j].from_central_router[k] << " "
+             << bits_opt[i][j].from_central_router[k] << endl;
+        t_Hybrid[i][j]->flit_rx_from_central_tile[k](
+            flit_opt[i][j].from_central_router[k]);
+        t_Hybrid[i][j]->req_rx_from_central_tile[k](
+            req_opt[i][j].from_central_router[k]);
+        t_Hybrid[i][j]->ack_tx_from_central_tile[k](
+            ack_opt[i][j].from_central_router[k]);
+        t_Hybrid[i][j]->bits_in_from_central_tile[k](
+            bits_opt[i][j].from_central_router[k]);
+        t_central->flit_tx[j * GlobalParams::mesh_dim_x + i][k](
+            flit_opt[i][j].from_central_router[k]);
+        t_central->req_tx[j * GlobalParams::mesh_dim_x + i][k](
+            req_opt[i][j].from_central_router[k]);
+        t_central->ack_tx[j * GlobalParams::mesh_dim_x + i][k](
+            ack_opt[i][j].from_central_router[k]);
+        t_central->bits_out[j * GlobalParams::mesh_dim_x + i][k](
+            bits_opt[i][j].from_central_router[k]);
+      }
+      // t_Hybrid[i][j]->ack_rx_to_central_tile
+      // (ack_opt[i][j].to_central_router); Map Tx signals
+      for (int k = 0; k < GlobalParams::mesh_dim_x * GlobalParams::mesh_dim_y;
+           k++) {
+        t_Hybrid[i][j]->flit_tx_to_central_tile[k](
+            flit_opt[i][j].to_central_router[k]);
+        t_Hybrid[i][j]->req_tx_to_central_tile[k](
+            req_opt[i][j].to_central_router[k]);
+        t_Hybrid[i][j]->ack_rx_to_central_tile[k](
+            ack_opt[i][j].to_central_router[k]);
+        t_Hybrid[i][j]->bits_out_to_central_tile[k](
+            bits_opt[i][j].to_central_router[k]);
+        // Map Central Router signals
+        t_central->flit_rx[j * GlobalParams::mesh_dim_x + i][k](
+            flit_opt[i][j].to_central_router[k]);
+        t_central->req_rx[j * GlobalParams::mesh_dim_x + i][k](
+            req_opt[i][j].to_central_router[k]);
+        t_central->ack_rx[j * GlobalParams::mesh_dim_x + i][k](
+            ack_opt[i][j].to_central_router[k]);
+        t_central->bits_in[j * GlobalParams::mesh_dim_x + i][k](
+            bits_opt[i][j].to_central_router[k]);
+      }
 
-			t_Hybrid[i][j]->req_rx[DIRECTION_EAST](req[i + 1][j].west);
-			t_Hybrid[i][j]->flit_rx[DIRECTION_EAST](flit[i + 1][j].west);
-			t_Hybrid[i][j]->ack_rx[DIRECTION_EAST](ack[i + 1][j].east);
+      // Map Rx signals
+      t_Hybrid[i][j]->req_rx[DIRECTION_NORTH](req[i][j].south);   // in
+      t_Hybrid[i][j]->flit_rx[DIRECTION_NORTH](flit[i][j].south); // in
+      t_Hybrid[i][j]->ack_rx[DIRECTION_NORTH](ack[i][j].north);   // out
 
-			t_Hybrid[i][j]->req_rx[DIRECTION_SOUTH](req[i][j + 1].north);
-			t_Hybrid[i][j]->flit_rx[DIRECTION_SOUTH](flit[i][j + 1].north);
-			t_Hybrid[i][j]->ack_rx[DIRECTION_SOUTH](ack[i][j + 1].south);
+      t_Hybrid[i][j]->req_rx[DIRECTION_EAST](req[i + 1][j].west);
+      t_Hybrid[i][j]->flit_rx[DIRECTION_EAST](flit[i + 1][j].west);
+      t_Hybrid[i][j]->ack_rx[DIRECTION_EAST](ack[i + 1][j].east);
 
-			t_Hybrid[i][j]->req_rx[DIRECTION_WEST](req[i][j].east);
-			t_Hybrid[i][j]->flit_rx[DIRECTION_WEST](flit[i][j].east);
-			t_Hybrid[i][j]->ack_rx[DIRECTION_WEST](ack[i][j].west);
+      t_Hybrid[i][j]->req_rx[DIRECTION_SOUTH](req[i][j + 1].north);
+      t_Hybrid[i][j]->flit_rx[DIRECTION_SOUTH](flit[i][j + 1].north);
+      t_Hybrid[i][j]->ack_rx[DIRECTION_SOUTH](ack[i][j + 1].south);
 
-			// Map Tx signals
-			t_Hybrid[i][j]->req_tx[DIRECTION_NORTH](req[i][j].north);
-			t_Hybrid[i][j]->flit_tx[DIRECTION_NORTH](flit[i][j].north);
-			t_Hybrid[i][j]->ack_tx[DIRECTION_NORTH](ack[i][j].south);
+      t_Hybrid[i][j]->req_rx[DIRECTION_WEST](req[i][j].east);
+      t_Hybrid[i][j]->flit_rx[DIRECTION_WEST](flit[i][j].east);
+      t_Hybrid[i][j]->ack_rx[DIRECTION_WEST](ack[i][j].west);
 
-			t_Hybrid[i][j]->req_tx[DIRECTION_EAST](req[i + 1][j].east);
-			t_Hybrid[i][j]->flit_tx[DIRECTION_EAST](flit[i + 1][j].east);
-			t_Hybrid[i][j]->ack_tx[DIRECTION_EAST](ack[i + 1][j].west);
+      // Map Tx signals
+      t_Hybrid[i][j]->req_tx[DIRECTION_NORTH](req[i][j].north);
+      t_Hybrid[i][j]->flit_tx[DIRECTION_NORTH](flit[i][j].north);
+      t_Hybrid[i][j]->ack_tx[DIRECTION_NORTH](ack[i][j].south);
 
-			t_Hybrid[i][j]->req_tx[DIRECTION_SOUTH](req[i][j + 1].south);
-			t_Hybrid[i][j]->flit_tx[DIRECTION_SOUTH](flit[i][j + 1].south);
-			t_Hybrid[i][j]->ack_tx[DIRECTION_SOUTH](ack[i][j + 1].north);
+      t_Hybrid[i][j]->req_tx[DIRECTION_EAST](req[i + 1][j].east);
+      t_Hybrid[i][j]->flit_tx[DIRECTION_EAST](flit[i + 1][j].east);
+      t_Hybrid[i][j]->ack_tx[DIRECTION_EAST](ack[i + 1][j].west);
 
-			t_Hybrid[i][j]->req_tx[DIRECTION_WEST](req[i][j].west);
-			t_Hybrid[i][j]->flit_tx[DIRECTION_WEST](flit[i][j].west);
-			t_Hybrid[i][j]->ack_tx[DIRECTION_WEST](ack[i][j].east);
-			/*
-					// TODO: check if hub signal is always required
-					// signals/port when Hybrid_tile receives(rx) from hub
-					t_Hybrid[i][j]->hub_req_rx(req[i][j].from_hub);
-					t_Hybrid[i][j]->hub_flit_rx(flit[i][j].from_hub);
-					t_Hybrid[i][j]->hub_ack_rx(ack[i][j].to_hub);
+      t_Hybrid[i][j]->req_tx[DIRECTION_SOUTH](req[i][j + 1].south);
+      t_Hybrid[i][j]->flit_tx[DIRECTION_SOUTH](flit[i][j + 1].south);
+      t_Hybrid[i][j]->ack_tx[DIRECTION_SOUTH](ack[i][j + 1].north);
 
-					// signals/port when tile transmits(tx) to hub
-					t_Hybrid[i][j]->hub_req_tx(req[i][j].to_hub); // 7, sc_out
-					t_Hybrid[i][j]->hub_flit_tx(flit[i][j].to_hub);
-					t_Hybrid[i][j]->hub_ack_tx(ack[i][j].from_hub);
+      t_Hybrid[i][j]->req_tx[DIRECTION_WEST](req[i][j].west);
+      t_Hybrid[i][j]->flit_tx[DIRECTION_WEST](flit[i][j].west);
+      t_Hybrid[i][j]->ack_tx[DIRECTION_WEST](ack[i][j].east);
+      /*
+                      // TODO: check if hub signal is always required
+                      // signals/port when Hybrid_tile receives(rx) from hub
+                      t_Hybrid[i][j]->hub_req_rx(req[i][j].from_hub);
+                      t_Hybrid[i][j]->hub_flit_rx(flit[i][j].from_hub);
+                      t_Hybrid[i][j]->hub_ack_rx(ack[i][j].to_hub);
+
+                      // signals/port when tile transmits(tx) to hub
+                      t_Hybrid[i][j]->hub_req_tx(req[i][j].to_hub); // 7, sc_out
+                      t_Hybrid[i][j]->hub_flit_tx(flit[i][j].to_hub);
+                      t_Hybrid[i][j]->hub_ack_tx(ack[i][j].from_hub);
 
 
-					// TODO: Review port index. Connect each Hub to all its Channels
+                      // TODO: Review port index. Connect each Hub to all its
+         Channels
 
-					map<int, int>::iterator it = GlobalParams::hub_for_tile.find(Hybrid_tile_id);
-					if (it != GlobalParams::hub_for_tile.end())
-					{
-						int hub_id = GlobalParams::hub_for_tile[Hybrid_tile_id];
+                      map<int, int>::iterator it =
+         GlobalParams::hub_for_tile.find(Hybrid_tile_id); if (it !=
+         GlobalParams::hub_for_tile.end())
+                      {
+                              int hub_id =
+         GlobalParams::hub_for_tile[Hybrid_tile_id];
 
-						// The next time that the same HUB is considered, the next
-						// port will be connected
-						int port = hub_connected_ports[hub_id]++;
+                              // The next time that the same HUB is considered,
+         the next
+                              // port will be connected
+                              int port = hub_connected_ports[hub_id]++;
 
-						hub[hub_id]->tile2port_mapping[t_Hybrid[i][j]->local_id] = port;
+                              hub[hub_id]->tile2port_mapping[t_Hybrid[i][j]->local_id]
+         = port;
 
-						hub[hub_id]->req_rx[port](req[i][j].to_hub);
-						hub[hub_id]->flit_rx[port](flit[i][j].to_hub);
-						hub[hub_id]->ack_rx[port](ack[i][j].from_hub);
+                              hub[hub_id]->req_rx[port](req[i][j].to_hub);
+                              hub[hub_id]->flit_rx[port](flit[i][j].to_hub);
+                              hub[hub_id]->ack_rx[port](ack[i][j].from_hub);
 
-						hub[hub_id]->flit_tx[port](flit[i][j].from_hub);
-						hub[hub_id]->req_tx[port](req[i][j].from_hub);
-						hub[hub_id]->ack_tx[port](ack[i][j].to_hub);
-					}
-					*/
-			// Map buffer level signals (analogy with req_tx/rx port mapping)
-			t_Hybrid[i][j]->free_slots[DIRECTION_NORTH](free_slots[i][j].north);
-			t_Hybrid[i][j]->free_slots[DIRECTION_EAST](free_slots[i + 1][j].east);
-			t_Hybrid[i][j]->free_slots[DIRECTION_SOUTH](free_slots[i][j + 1].south);
-			t_Hybrid[i][j]->free_slots[DIRECTION_WEST](free_slots[i][j].west);
+                              hub[hub_id]->flit_tx[port](flit[i][j].from_hub);
+                              hub[hub_id]->req_tx[port](req[i][j].from_hub);
+                              hub[hub_id]->ack_tx[port](ack[i][j].to_hub);
+                      }
+                      */
+      // Map buffer level signals (analogy with req_tx/rx port mapping)
+      t_Hybrid[i][j]->free_slots[DIRECTION_NORTH](free_slots[i][j].north);
+      t_Hybrid[i][j]->free_slots[DIRECTION_EAST](free_slots[i + 1][j].east);
+      t_Hybrid[i][j]->free_slots[DIRECTION_SOUTH](free_slots[i][j + 1].south);
+      t_Hybrid[i][j]->free_slots[DIRECTION_WEST](free_slots[i][j].west);
 
-			t_Hybrid[i][j]->free_slots_neighbor[DIRECTION_NORTH](free_slots[i][j].south);
-			t_Hybrid[i][j]->free_slots_neighbor[DIRECTION_EAST](free_slots[i + 1][j].west);
-			t_Hybrid[i][j]->free_slots_neighbor[DIRECTION_SOUTH](free_slots[i][j + 1].north);
-			t_Hybrid[i][j]->free_slots_neighbor[DIRECTION_WEST](free_slots[i][j].east);
+      t_Hybrid[i][j]->free_slots_neighbor[DIRECTION_NORTH](
+          free_slots[i][j].south);
+      t_Hybrid[i][j]->free_slots_neighbor[DIRECTION_EAST](
+          free_slots[i + 1][j].west);
+      t_Hybrid[i][j]->free_slots_neighbor[DIRECTION_SOUTH](
+          free_slots[i][j + 1].north);
+      t_Hybrid[i][j]->free_slots_neighbor[DIRECTION_WEST](
+          free_slots[i][j].east);
 
-			// NoP
-			t_Hybrid[i][j]->NoP_data_out[DIRECTION_NORTH](nop_data[i][j].north);
-			t_Hybrid[i][j]->NoP_data_out[DIRECTION_EAST](nop_data[i + 1][j].east);
-			t_Hybrid[i][j]->NoP_data_out[DIRECTION_SOUTH](nop_data[i][j + 1].south);
-			t_Hybrid[i][j]->NoP_data_out[DIRECTION_WEST](nop_data[i][j].west);
+      // NoP
+      t_Hybrid[i][j]->NoP_data_out[DIRECTION_NORTH](nop_data[i][j].north);
+      t_Hybrid[i][j]->NoP_data_out[DIRECTION_EAST](nop_data[i + 1][j].east);
+      t_Hybrid[i][j]->NoP_data_out[DIRECTION_SOUTH](nop_data[i][j + 1].south);
+      t_Hybrid[i][j]->NoP_data_out[DIRECTION_WEST](nop_data[i][j].west);
 
-			t_Hybrid[i][j]->NoP_data_in[DIRECTION_NORTH](nop_data[i][j].south);
-			t_Hybrid[i][j]->NoP_data_in[DIRECTION_EAST](nop_data[i + 1][j].west);
-			t_Hybrid[i][j]->NoP_data_in[DIRECTION_SOUTH](nop_data[i][j + 1].north);
-			t_Hybrid[i][j]->NoP_data_in[DIRECTION_WEST](nop_data[i][j].east);
-		}
-	}
+      t_Hybrid[i][j]->NoP_data_in[DIRECTION_NORTH](nop_data[i][j].south);
+      t_Hybrid[i][j]->NoP_data_in[DIRECTION_EAST](nop_data[i + 1][j].west);
+      t_Hybrid[i][j]->NoP_data_in[DIRECTION_SOUTH](nop_data[i][j + 1].north);
+      t_Hybrid[i][j]->NoP_data_in[DIRECTION_WEST](nop_data[i][j].east);
+    }
+  }
 
-	// dummy NoP_data structure
-	NoP_data tmp_NoP;
+  // dummy NoP_data structure
+  NoP_data tmp_NoP;
 
-	tmp_NoP.sender_id = NOT_VALID;
+  tmp_NoP.sender_id = NOT_VALID;
 
-	for (int i = 0; i < DIRECTIONS; i++)
-	{
-		tmp_NoP.channel_status_neighbor[i].free_slots = NOT_VALID;
-		tmp_NoP.channel_status_neighbor[i].available = false;
-	}
+  for (int i = 0; i < DIRECTIONS; i++) {
+    tmp_NoP.channel_status_neighbor[i].free_slots = NOT_VALID;
+    tmp_NoP.channel_status_neighbor[i].available = false;
+  }
 
-	// Clear signals for borderline nodes
-	for (int i = 0; i <= GlobalParams::mesh_dim_x; i++)
-	{
-		req[i][0].south = 0;
-		ack[i][0].north = 0;
-		req[i][GlobalParams::mesh_dim_y].north = 0;
-		ack[i][GlobalParams::mesh_dim_y].south = 0;
+  // Clear signals for borderline nodes
+  for (int i = 0; i <= GlobalParams::mesh_dim_x; i++) {
+    req[i][0].south = 0;
+    ack[i][0].north = 0;
+    req[i][GlobalParams::mesh_dim_y].north = 0;
+    ack[i][GlobalParams::mesh_dim_y].south = 0;
 
-		free_slots[i][0].south.write(NOT_VALID);
-		free_slots[i][GlobalParams::mesh_dim_y].north.write(NOT_VALID);
+    free_slots[i][0].south.write(NOT_VALID);
+    free_slots[i][GlobalParams::mesh_dim_y].north.write(NOT_VALID);
 
-		nop_data[i][0].south.write(tmp_NoP);
-		nop_data[i][GlobalParams::mesh_dim_y].north.write(tmp_NoP);
-	}
+    nop_data[i][0].south.write(tmp_NoP);
+    nop_data[i][GlobalParams::mesh_dim_y].north.write(tmp_NoP);
+  }
 
-	for (int j = 0; j <= GlobalParams::mesh_dim_y; j++)
-	{
-		req[0][j].east = 0;
-		ack[0][j].west = 0;
-		req[GlobalParams::mesh_dim_x][j].west = 0;
-		ack[GlobalParams::mesh_dim_x][j].east = 0;
+  for (int j = 0; j <= GlobalParams::mesh_dim_y; j++) {
+    req[0][j].east = 0;
+    ack[0][j].west = 0;
+    req[GlobalParams::mesh_dim_x][j].west = 0;
+    ack[GlobalParams::mesh_dim_x][j].east = 0;
 
-		free_slots[0][j].east.write(NOT_VALID);
-		free_slots[GlobalParams::mesh_dim_x][j].west.write(NOT_VALID);
+    free_slots[0][j].east.write(NOT_VALID);
+    free_slots[GlobalParams::mesh_dim_x][j].west.write(NOT_VALID);
 
-		nop_data[0][j].east.write(tmp_NoP);
-		nop_data[GlobalParams::mesh_dim_x][j].west.write(tmp_NoP);
-	}
+    nop_data[0][j].east.write(tmp_NoP);
+    nop_data[GlobalParams::mesh_dim_x][j].west.write(tmp_NoP);
+  }
 
-	// invalidate reservation table entries for non-exhistent channels
-	for (int i = 0; i < GlobalParams::mesh_dim_x; i++)
-	{
-		t_Hybrid[i][0]->r->reservation_table.invalidate(DIRECTION_NORTH);
-		t_Hybrid[i][GlobalParams::mesh_dim_y - 1]->r->reservation_table.invalidate(DIRECTION_SOUTH);
-	}
-	for (int j = 0; j < GlobalParams::mesh_dim_y; j++)
-	{
-		t_Hybrid[0][j]->r->reservation_table.invalidate(DIRECTION_WEST);
-		t_Hybrid[GlobalParams::mesh_dim_x - 1][j]->r->reservation_table.invalidate(DIRECTION_EAST);
-	}
+  // invalidate reservation table entries for non-exhistent channels
+  for (int i = 0; i < GlobalParams::mesh_dim_x; i++) {
+    t_Hybrid[i][0]->r->reservation_table.invalidate(DIRECTION_NORTH);
+    t_Hybrid[i][GlobalParams::mesh_dim_y - 1]->r->reservation_table.invalidate(
+        DIRECTION_SOUTH);
+  }
+  for (int j = 0; j < GlobalParams::mesh_dim_y; j++) {
+    t_Hybrid[0][j]->r->reservation_table.invalidate(DIRECTION_WEST);
+    t_Hybrid[GlobalParams::mesh_dim_x - 1][j]->r->reservation_table.invalidate(
+        DIRECTION_EAST);
+  }
 }

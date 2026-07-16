@@ -1,4 +1,5 @@
 #include "DualClockBuffer.h"
+
 #include "Utils.h"
 
 DualClockBuffer::DualClockBuffer() {
@@ -24,17 +25,19 @@ void DualClockBuffer::Print(const char *prefix) {
   while (!m.empty()) {
     Flit f = m.front();
     m.pop_front();
-    if(f.flit_type == FLIT_TYPE_FLOWCONTROL){
-      cout << bstr << t[f.flit_type] << f.sequence_no <<  "(" << f.src_id << "->" << f.dst_id << "," << f.flow_control << ") | ";
-    }
-    else
-      cout << bstr << t[f.flit_type] << f.sequence_no <<  "(" << f.src_id << "->" << f.dst_id << ") | ";
+    if (f.flit_type == FLIT_TYPE_FLOWCONTROL) {
+      cout << bstr << t[f.flit_type] << f.sequence_no << "(" << f.src_id << "->"
+           << f.dst_id << "," << f.flow_control << ") | ";
+    } else
+      cout << bstr << t[f.flit_type] << f.sequence_no << "(" << f.src_id << "->"
+           << f.dst_id << ") | ";
   }
   cout << endl;
 }
 
 void DualClockBuffer::deadlockCheck() {
-  if (IsEmpty()) return;
+  if (IsEmpty())
+    return;
 
   Flit f = buffer.front();
   int seq = f.sequence_no;
@@ -48,7 +51,8 @@ void DualClockBuffer::deadlockCheck() {
 }
 
 bool DualClockBuffer::deadlockFree() {
-  if (IsEmpty()) return true;
+  if (IsEmpty())
+    return true;
 
   Flit f = buffer.front();
   int seq = f.sequence_no;
@@ -60,14 +64,13 @@ bool DualClockBuffer::deadlockFree() {
     full_cycles_counter = 0;
   }
 
-  if (full_cycles_counter > 10000) return false;
+  if (full_cycles_counter > 10000)
+    return false;
 
   return true;
 }
 
-void DualClockBuffer::Disable() {
-  true_buffer = false;
-}
+void DualClockBuffer::Disable() { true_buffer = false; }
 
 void DualClockBuffer::SetMaxBufferSize(const unsigned int bms) {
   assert(bms > 0);
@@ -82,17 +85,11 @@ bool DualClockBuffer::IsFull() const {
   return buffer.size() == max_buffer_size;
 }
 
-bool DualClockBuffer::IsEmpty() const {
-  return buffer.empty();
-}
+bool DualClockBuffer::IsEmpty() const { return buffer.empty(); }
 
-void DualClockBuffer::Drop(const Flit &flit) const {
-  assert(false);
-}
+void DualClockBuffer::Drop(const Flit &flit) const { assert(false); }
 
-void DualClockBuffer::Empty() const {
-  assert(false);
-}
+void DualClockBuffer::Empty() const { assert(false); }
 
 void DualClockBuffer::Push(const Flit &flit) {
   SaveOccupancyAndTime();
@@ -100,12 +97,13 @@ void DualClockBuffer::Push(const Flit &flit) {
   if (IsFull()) {
     Drop(flit);
   } else {
-    buffer.push_back(flit);  // Push flit to the back of the deque
+    buffer.push_back(flit); // Push flit to the back of the deque
   }
 
   UpdateMeanOccupancy();
 
-  if (max_occupancy < buffer.size()) max_occupancy = buffer.size();
+  if (max_occupancy < buffer.size())
+    max_occupancy = buffer.size();
 }
 
 Flit DualClockBuffer::Pop() {
@@ -117,7 +115,7 @@ Flit DualClockBuffer::Pop() {
     Empty();
   } else {
     f = buffer.front();
-    buffer.pop_front();  // Pop flit from the front of the deque
+    buffer.pop_front(); // Pop flit from the front of the deque
   }
 
   UpdateMeanOccupancy();
@@ -137,12 +135,10 @@ Flit DualClockBuffer::Front() const {
   return f;
 }
 
-unsigned int DualClockBuffer::Size() const {
-  return buffer.size();
-}
+unsigned int DualClockBuffer::Size() const { return buffer.size(); }
 
 unsigned int DualClockBuffer::getFlowControlOFF() const {
-  int trt = 2; // cycle
+  int trt = 2;                           // cycle
   int b_value = GlobalParams::flit_size; // bit/cycle
   int Lf = GlobalParams::flit_size;
 
@@ -158,16 +154,21 @@ unsigned int DualClockBuffer::getCurrentFreeSlots() const {
 
 void DualClockBuffer::SaveOccupancyAndTime() {
   previous_occupancy = buffer.size();
-  hold_time = (sc_time_stamp().to_double() / GlobalParams::clock_period_ps) - last_event;
+  hold_time = (sc_time_stamp().to_double() / GlobalParams::clock_period_ps) -
+              last_event;
   last_event = sc_time_stamp().to_double() / GlobalParams::clock_period_ps;
 }
 
 void DualClockBuffer::UpdateMeanOccupancy() {
-  double current_time = sc_time_stamp().to_double() / GlobalParams::clock_period_ps;
-  if (current_time - GlobalParams::reset_time < GlobalParams::stats_warm_up_time) return;
+  double current_time =
+      sc_time_stamp().to_double() / GlobalParams::clock_period_ps;
+  if (current_time - GlobalParams::reset_time <
+      GlobalParams::stats_warm_up_time)
+    return;
 
-  mean_occupancy = mean_occupancy * (hold_time_sum / (hold_time_sum + hold_time)) +
-    (1.0 / (hold_time_sum + hold_time)) * hold_time * buffer.size();
+  mean_occupancy =
+      mean_occupancy * (hold_time_sum / (hold_time_sum + hold_time)) +
+      (1.0 / (hold_time_sum + hold_time)) * hold_time * buffer.size();
 
   hold_time_sum += hold_time;
 }
@@ -179,9 +180,10 @@ void DualClockBuffer::ShowStats(std::ostream &out) {
     out << "\t\t";
 }
 
-// Insert credit with higher priority than data (insert at the front of the deque)
+// Insert credit with higher priority than data (insert at the front of the
+// deque)
 void DualClockBuffer::InsertFlowControl(const Flit &flowControl_flit) {
   if (!IsFull()) {
-    buffer.push_front(flowControl_flit);  // Insert flowControl_flit at the front
+    buffer.push_front(flowControl_flit); // Insert flowControl_flit at the front
   }
 }

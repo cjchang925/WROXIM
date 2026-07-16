@@ -31,12 +31,12 @@ string GlobalParams::traffic_distribution;
 string GlobalParams::traffic_table_filename;
 string GlobalParams::config_filename;
 string GlobalParams::power_config_filename;
-string GlobalParams::taskmapping_filename;		// Added by LGGM
-string GlobalParams::taskmappinglog_filename;	// Added by LGGM
-bool GlobalParams::tgffMappingEnabled;		    // Added by ACAG
+string GlobalParams::taskmapping_filename;    // Added by LGGM
+string GlobalParams::taskmappinglog_filename; // Added by LGGM
+bool GlobalParams::tgffMappingEnabled;        // Added by ACAG
 
-string GlobalParams::optical_power_config_filename;// WRONoC Added by JengDe
-int GlobalParams::clock_period_optical_ps;  // WRONoC Added by JengDe
+string GlobalParams::optical_power_config_filename; // WRONoC Added by JengDe
+int GlobalParams::clock_period_optical_ps;          // WRONoC Added by JengDe
 
 int GlobalParams::clock_period_ps;
 int GlobalParams::simulation_time;
@@ -46,7 +46,7 @@ int GlobalParams::rnd_generator_seed;
 bool GlobalParams::detailed;
 double GlobalParams::dyad_threshold;
 unsigned int GlobalParams::max_volume_to_be_drained;
-vector <pair <int, double> > GlobalParams::hotspots;
+vector<pair<int, double> > GlobalParams::hotspots;
 bool GlobalParams::show_buffer_stats;
 bool GlobalParams::use_winoc;
 bool GlobalParams::use_powermanager;
@@ -56,9 +56,10 @@ HubConfig GlobalParams::default_hub_configuration;
 map<int, HubConfig> GlobalParams::hub_configuration;
 map<int, int> GlobalParams::hub_for_tile;
 PowerConfig GlobalParams::power_configuration;
-OpticalPowerConfig GlobalParams::optical_power_configuration; // WRONoC Added by JengDe
+OpticalPowerConfig
+    GlobalParams::optical_power_configuration; // WRONoC Added by JengDe
 
-string GlobalParams::network_protocol; // WRONoC Added by JengDe
-bool GlobalParams::use_TxRx_PreciseTiming; //WRONoC Added by JengDe
+string GlobalParams::network_protocol;     // WRONoC Added by JengDe
+bool GlobalParams::use_TxRx_PreciseTiming; // WRONoC Added by JengDe
 
 string GlobalParams::architecture;
