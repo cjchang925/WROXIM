@@ -124,8 +124,8 @@ if __name__ == "__main__":
 
     #file_name = "experiments/tg5/experiment_tg5_GWOR_b8"
     #map_file_name = "experiments/experiment_tg5.map"
-    file_name = "experiment_tg3_lambda"
-    map_file_name = "experiment_tg3.map"
+    file_name = "contention_demo_large_lambda"
+    map_file_name = "contention_demo_large.map"
     mapping = parse_task_to_pe_mapping(map_file_name)
     print(mapping)
     pe_data, buf_data = parse_log_file(file_name)

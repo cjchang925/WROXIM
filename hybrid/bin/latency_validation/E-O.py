@@ -53,7 +53,7 @@ path = sys.path[0]
 print(path)
 
 #map_filename = "experiment_tg5"
-map_filename = "experiment_tg3"
+map_filename = "contention_demo_large"
 
 with open(os.path.join(path, "..", "..", "tm_examples", f"{map_filename}.map"), "r") as file:
     lines = file.readlines()
